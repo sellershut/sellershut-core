@@ -1,7 +1,7 @@
 use sellershut_core::{
     category::{
         query_categories_server::{QueryCategories, QueryCategoriesServer},
-        ResponseCategories, ResponseCategory,
+        ResponseCategories
     },
     common::{Empty, SearchQuery, Status},
 };
@@ -38,8 +38,8 @@ impl QueryCategories for CategoryService {
     #[allow(clippy::type_complexity, clippy::type_repetition_in_bounds)]
     async fn category_by_id(
         &self,
-        request: tonic::Request<SearchQuery>,
-    ) -> Result<tonic::Response<ResponseCategory>, tonic::Status> {
+        _request: tonic::Request<SearchQuery>,
+    ) -> Result<tonic::Response<ResponseCategories>, tonic::Status> {
         todo!()
     }
 
@@ -47,7 +47,7 @@ impl QueryCategories for CategoryService {
     #[allow(clippy::type_complexity, clippy::type_repetition_in_bounds)]
     async fn sub_categories(
         &self,
-        request: tonic::Request<SearchQuery>,
+        _request: tonic::Request<SearchQuery>,
     ) -> Result<tonic::Response<ResponseCategories>, tonic::Status> {
         todo!()
     }
@@ -56,7 +56,7 @@ impl QueryCategories for CategoryService {
     #[allow(clippy::type_complexity, clippy::type_repetition_in_bounds)]
     async fn search(
         &self,
-        request: tonic::Request<SearchQuery>,
+        _request: tonic::Request<SearchQuery>,
     ) -> Result<tonic::Response<ResponseCategories>, tonic::Status> {
         todo!()
     }
