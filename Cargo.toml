@@ -7,8 +7,7 @@ edition = "2021"
 prost = { version = "0.12.4", optional = true }
 prost-types = { version = "0.12.4", optional = true }
 serde = { version = "1.0.200", optional = true }
-# should ideally use surrealdb_core however, the IntoResource trait is not there
-surrealdb = { version = "1.4.2", optional = true, default-features = false }
+surrealdb-core = { version = "1.4.2", optional = true, default-features = false }
 tonic = { version = "0.11.0", optional = true, default-features = false }
 
 [build-dependencies]
@@ -21,7 +20,7 @@ users = ["tonic"]
 tonic = ["dep:tonic", "tonic/codegen", "tonic/prost", "prost"]
 tonic-rpc = ["tonic", "tonic/transport"]
 serde = ["dep:serde", "serde/derive"]
-surrealdb = ["dep:surrealdb"]
+surrealdb = ["dep:surrealdb-core"]
 
 [dev-dependencies]
 tokio = { version = "1.37.0", features = ["macros", "rt-multi-thread"] }

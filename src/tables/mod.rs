@@ -2,10 +2,7 @@
 use serde::{Deserialize, Serialize};
 
 #[cfg(all(feature = "surrealdb", any(feature = "users", feature = "categories")))]
-use surrealdb::{
-    opt::{IntoResource, Resource},
-    sql::Table as SurrealdbTable,
-};
+use surrealdb_core::sql::Table as SurrealdbTable;
 
 #[non_exhaustive]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
@@ -53,8 +50,8 @@ impl std::fmt::Display for Table {
 }
 
 #[cfg(all(feature = "surrealdb", any(feature = "users", feature = "categories")))]
-impl<R> IntoResource<Vec<R>> for Table {
-    fn into_resource(self) -> Result<Resource, surrealdb::Error> {
-        Ok(Resource::Table(SurrealdbTable(self.to_string())))
+impl From<Table> for SurrealdbTable {
+    fn from(value: Table) -> Self {
+        SurrealdbTable::from(value.to_string())
     }
 }
