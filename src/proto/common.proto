@@ -7,8 +7,13 @@ package common;
 // An empty message
 message Empty {}
 
+// A message holding an optional string, for string based searching
+message SearchQueryOptional {
+  optional string query = 1; // A parameter sent in with requests
+}
+
 // A message holding a string, for string based searching
-message SearchQuery {
+message SearchQuery{
   string query = 1; // A parameter sent in with requests
 }
 
