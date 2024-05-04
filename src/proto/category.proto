@@ -7,10 +7,10 @@ import "proto/common.proto";
 // The Category Query service
 service QueryCategories {
   // gets all categories
-  rpc Categories (common.Empty) returns (CategoryList) {}
-  rpc CategoryById (common.SearchQuery) returns (Category) {}
-  rpc SubCategories (common.SearchQuery) returns (CategoryList) {}
-  rpc Search (common.SearchQuery) returns (CategoryList) {}
+  rpc Categories (common.Empty) returns (ResponseCategories) {}
+  rpc CategoryById (common.SearchQuery) returns (ResponseCategory) {}
+  rpc SubCategories (common.SearchQuery) returns (ResponseCategories) {}
+  rpc Search (common.SearchQuery) returns (ResponseCategories) {}
 }
 
 // A category
@@ -22,7 +22,13 @@ message Category {
   optional string parent_id = 5; // The direct parent of this category (if applicable)
 }
 
+message ResponseCategory {
+  common.Status status = 1;
+  repeated Category categories = 2; // A list of categories
+}
+
 /// A structure holding a list of categories
-message CategoryList {
-  repeated Category categories = 1; // A list of categories
+message ResponseCategories {
+  common.Status status = 1;
+  repeated Category categories = 2; // A list of categories
 }

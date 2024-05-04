@@ -18,8 +18,12 @@ default = []
 categories = ["tonic"]
 users = ["tonic"]
 tonic = ["dep:tonic", "tonic/codegen", "tonic/prost", "prost"]
+tonic-rpc = ["tonic", "tonic/transport"]
 serde = ["dep:serde", "serde/derive"]
 surrealdb = ["dep:surrealdb-core"]
+
+[dev-dependencies]
+tokio = { version = "1.37.0", features = ["macros", "rt-multi-thread"] }
 
 [package.metadata.docs.rs]
 all-features = true
@@ -27,3 +31,13 @@ rustdoc-args = [
   "--cfg",
   "docsrs"
 ]
+
+[[example]]
+name = "grpc-server"
+path = "examples/grpc/server.rs"
+required-features = ["categories", "tonic-rpc"]
+
+[[example]]
+name = "grpc-client"
+path = "examples/grpc/client.rs"
+required-features = ["categories", "tonic-rpc"]
