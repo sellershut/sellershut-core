@@ -2,6 +2,7 @@ syntax = "proto3";
 
 import "proto/common.proto";
 import "proto/account_provider.proto";
+import "proto/account.proto";
 import "proto/session.proto";
 
 package user;
@@ -35,7 +36,7 @@ service QueryUsers {
   rpc Users (common.Empty) returns (ResponseUsers);
   rpc UserById (common.SearchQuery) returns (ResponseUser);
   rpc UserByEmail (common.SearchQuery) returns (ResponseUser);
-  rpc UserByAccount (oauth.account_provider.OauthProvider) returns (ResponseUser);
+  rpc UserByAccount (OauthAccountParams) returns (ResponseUser);
   rpc Search (common.SearchQuery) returns (ResponseUsers);
   rpc SessionAndUser (common.SearchQuery) returns (ResponseSessionAndUser);
 }
@@ -44,6 +45,11 @@ message ResponseSessionAndUser {
   common.Status status = 1;
   oauth.session.OauthSession session = 2; // An oauth session
   User user = 3; // A user
+}
+
+message OauthAccountParams {
+  oauth.account_provider.OauthProvider provider = 1;
+  oauth.account.OauthAccount account = 2;
 }
 
 message ResponseUser {

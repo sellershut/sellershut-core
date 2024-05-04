@@ -9,3 +9,13 @@ message OauthAccount {
   string id = 1; // 
   string account_provider_id = 2; // A reference to the account provider
 }
+
+service MutateOauthAccount {
+  rpc Create (OauthAccount) returns (ResponseOauthAccount);
+  rpc Delete (common.SearchQuery) returns (ResponseOauthAccount);
+}
+
+message ResponseOauthAccount {
+  common.Status status = 1;
+  OauthAccount provider = 2; // A session
+}
