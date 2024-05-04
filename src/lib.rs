@@ -12,8 +12,4 @@ pub mod user;
 
 #[cfg(feature = "users")]
 #[cfg_attr(docsrs, doc(cfg(feature = "users")))]
-pub mod session;
-
-#[cfg(feature = "users")]
-#[cfg_attr(docsrs, doc(cfg(feature = "users")))]
-pub mod account_provider;
+pub mod oauth;

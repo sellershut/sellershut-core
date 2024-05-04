@@ -2,10 +2,30 @@ syntax = "proto3";
 
 import "proto/common.proto";
 
-package account_provider;
+package oauth.account_provider;
 
 // An oauth session
 message OauthProvider {
   string id = 1; // A unique identifier, it should be a v7 uuid
   string name = 2; // The provider's name
+}
+
+service MutateOauthProviders {
+  rpc Create (OauthProvider) returns (ResponseOauthProvider);
+  rpc Update (OauthProvider) returns (ResponseOauthProvider);
+  rpc Delete (common.SearchQuery) returns (ResponseOauthProvider);
+}
+
+service QueryOauthProviders {
+  rpc AccountProviders (common.Empty) returns (ResponseOauthProvider);
+}
+
+message ResponseOauthProvider {
+  common.Status status = 1;
+  OauthProvider provider = 2; // A session
+}
+
+message ResponseOauthProviders {
+  common.Status status = 1;
+  repeated OauthProvider providers = 2; // A list of users
 }

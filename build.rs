@@ -17,6 +17,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         protos.push("src/proto/user.proto");
         protos.push("src/proto/session.proto");
         protos.push("src/proto/account_provider.proto");
+        protos.push("src/proto/account.proto");
     }
 
     if !protos.is_empty() {
@@ -38,6 +39,7 @@ fn build(protos: &[&str]) -> Result<(), Box<dyn std::error::Error>> {
                 } else {
                     (f.ends_with("users.proto")
                         || f.ends_with("session.proto")
+                        || f.ends_with("account.proto")
                         || f.ends_with("account_provider.proto"))
                         && cfg!(all(feature = "users", feature = "tonic-rpc"))
                 },

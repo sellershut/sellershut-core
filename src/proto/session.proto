@@ -2,7 +2,7 @@ syntax = "proto3";
 
 import "proto/common.proto";
 
-package session;
+package oauth.session;
 
 // An oauth session
 message OauthSession {

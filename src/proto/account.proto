@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+import "proto/common.proto";
+
+package oauth.account;
+
+// An oauth account
+message OauthAccount {
+  string id = 1; // 
+  string account_provider_id = 2; // A reference to the account provider
+}

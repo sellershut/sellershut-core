@@ -35,14 +35,14 @@ service QueryUsers {
   rpc Users (common.Empty) returns (ResponseUsers);
   rpc UserById (common.SearchQuery) returns (ResponseUser);
   rpc UserByEmail (common.SearchQuery) returns (ResponseUser);
-  rpc UserByAccount (account_provider.OauthProvider) returns (ResponseUser);
+  rpc UserByAccount (oauth.account_provider.OauthProvider) returns (ResponseUser);
   rpc Search (common.SearchQuery) returns (ResponseUsers);
   rpc SessionAndUser (common.SearchQuery) returns (ResponseSessionAndUser);
 }
 
 message ResponseSessionAndUser {
   common.Status status = 1;
-  session.OauthSession session = 2; // An oauth session
+  oauth.session.OauthSession session = 2; // An oauth session
   User user = 3; // A user
 }
 
