@@ -13,6 +13,16 @@ service QueryCategories {
   rpc Search (common.SearchQuery) returns (ResponseCategories) {}
 }
 
+// Category Mutation Service
+service Categories {
+  // Create a category
+  rpc Create (Category) returns (ResponseCategories) {}
+  // Update a category
+  rpc Update (common.SearchQuery) returns (ResponseCategories) {}
+  // Delete a category
+  rpc Delete (common.SearchQuery) returns (ResponseCategories) {}
+}
+
 // A category
 message Category {
   string id = 1; // A unique identifier, it should be a v7 uuid
