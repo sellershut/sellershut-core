@@ -14,7 +14,7 @@ service QueryCategories {
 }
 
 // Category Mutation Service
-service Categories {
+service MutateCategories {
   // Create a category
   rpc Create (Category) returns (ResponseCategories) {}
   // Update a category
