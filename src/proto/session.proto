@@ -11,3 +11,24 @@ message OauthSession {
   string account_provider_id = 3; // An oauth account provider id
   string user_id = 4; // Owner of the session
 }
+
+service MutateSessions {
+  rpc Create (OauthSession) returns (ResponseSession);
+  rpc Update (OauthSession) returns (ResponseSession);
+  rpc Delete (common.SearchQuery) returns (ResponseSession);
+}
+
+service QuerySessions {
+  // get sessions by a user id
+  rpc UserSessions (common.SearchQuery) returns (ResponseSessions);
+}
+
+message ResponseSession {
+  common.Status status = 1;
+  OauthSession session = 2; // A session
+}
+
+message ResponseSessions {
+  common.Status status = 1;
+  repeated OauthSession sessions = 2; // A list of users
+}
