@@ -24,7 +24,7 @@ message Category {
 
 message ResponseCategory {
   common.Status status = 1;
-  repeated Category categories = 2; // A list of categories
+  Category category = 2; // A list of categories
 }
 
 /// A structure holding a list of categories
