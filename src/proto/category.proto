@@ -18,7 +18,7 @@ service MutateCategories {
   // Create a category
   rpc Create (Category) returns (ResponseCategories) {}
   // Update a category
-  rpc Update (common.SearchQuery) returns (ResponseCategories) {}
+  rpc Update (Category) returns (ResponseCategories) {}
   // Delete a category
   rpc Delete (common.SearchQuery) returns (ResponseCategories) {}
 }
