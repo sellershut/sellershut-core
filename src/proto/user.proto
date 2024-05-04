@@ -1,6 +1,8 @@
 syntax = "proto3";
 
 import "proto/common.proto";
+import "proto/account_provider.proto";
+import "proto/session.proto";
 
 package user;
 
@@ -23,8 +25,25 @@ message User {
   uint64 updated = 9; // Updated
 }
 
-service Users {
+service MutateUsers {
   rpc Create (User) returns (ResponseUser);
+  rpc Update (User) returns (ResponseUser);
+  rpc Delete (User) returns (ResponseUser);
+}
+
+service QueryUsers {
+  rpc Users (common.Empty) returns (ResponseUsers);
+  rpc UserById (common.SearchQuery) returns (ResponseUser);
+  rpc UserByEmail (common.SearchQuery) returns (ResponseUser);
+  rpc UserByAccount (account_provider.OauthProvider) returns (ResponseUser);
+  rpc Search (common.SearchQuery) returns (ResponseUsers);
+  rpc SessionAndUser (common.SearchQuery) returns (ResponseSessionAndUser);
+}
+
+message ResponseSessionAndUser {
+  common.Status status = 1;
+  session.OauthSession session = 2; // An oauth session
+  User user = 3; // A user
 }
 
 message ResponseUser {

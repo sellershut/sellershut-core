@@ -10,7 +10,10 @@ pub mod category;
 #[cfg_attr(docsrs, doc(cfg(feature = "users")))]
 pub mod user;
 
-#[cfg(feature = "tonic-rpc")]
-pub mod reexports {
-    pub use tonic;
-}
+#[cfg(feature = "users")]
+#[cfg_attr(docsrs, doc(cfg(feature = "users")))]
+pub mod session;
+
+#[cfg(feature = "users")]
+#[cfg_attr(docsrs, doc(cfg(feature = "users")))]
+pub mod account_provider;
