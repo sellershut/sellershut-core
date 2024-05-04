@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package user;
+
+// A type of user
+enum UserType {
+  Individual = 0; // User owns account
+  Group = 1; // User part of group
+}
+
+// A user
+message User {
+  string id = 1; // A unique identifier, it should be a v7 uuid
+  string username = 2; // A unique identifier, it should be a v7 uuid
+  string email = 3; // A unique identifier, it should be a v7 uuid
+  optional string name = 4; // A unique identifier, it should be a v7 uuid
+  optional string avatar = 5; // A unique identifier, it should be a v7 uuid
+
+  UserType user_type = 6; // A unique identifier, it should be a v7 uuid
+  repeated string phone_numbers = 7; // A unique identifier, it should be a v7 uuid
+  uint64 created = 8; // Created
+  uint64 updated = 9; // Updated
+
+}
+
+service Users {
+  rpc Create (User) returns (User);
+}

@@ -7,14 +7,23 @@ edition = "2021"
 prost = { version = "0.12.4", optional = true }
 prost-types = { version = "0.12.4", optional = true }
 serde = { version = "1.0.200", optional = true }
-tonic = { version = "0.11.0", optional = true }
+surrealdb-core = { version = "1.4.2", optional = true, default-features = false }
+tonic = { version = "0.11.0", optional = true, default-features = false }
 
 [build-dependencies]
-prost-build = "0.12.4"
 tonic-build = "0.11.0"
 
 [features]
 default = []
-categories = ["dep:prost", "dep:prost-types"]
-rpc = ["dep:tonic"]
+categories = ["tonic"]
+users = ["tonic"]
+tonic = ["dep:tonic", "tonic/codegen", "tonic/prost", "prost"]
 serde = ["dep:serde", "serde/derive"]
+surrealdb = ["dep:surrealdb-core"]
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = [
+  "--cfg",
+  "docsrs"
+]
