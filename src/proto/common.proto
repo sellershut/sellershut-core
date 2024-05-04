@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package common;
+
+// Define a message for the request
+message Empty {}
+
+message SearchQuery {
+  string query = 1;
+}

@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package category;
+
+import "proto/common.proto";
+
+// The Category Query service
+service QueryCategories {
+  // gets all categories
+  rpc Categories (common.Empty) returns (CategoryList) {}
+  rpc CategoryById (common.SearchQuery) returns (Category) {}
+  rpc SubCategories (common.SearchQuery) returns (CategoryList) {}
+  rpc Search (common.SearchQuery) returns (CategoryList) {}
+}
+
+// A category
+message Category {
+  string id = 1; // A unique identifier, it should be a v7 uuid
+  string name = 2; // Human readable name
+  repeated string sub_categories = 3; // A list of sub categories of this current category
+  optional string image_url = 4; // An optional image denoting this category
+  optional string parent_id = 5; // The direct parent of this category (if applicable)
+}
+
+/// A structure holding a list of categories
+message CategoryList {
+  repeated Category categories = 1; // A list of categories
+}
