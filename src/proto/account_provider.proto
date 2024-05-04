@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+import "proto/common.proto";
+
+package account_provider;
+
+// An oauth session
+message OauthProvider {
+  string id = 1; // A unique identifier, it should be a v7 uuid
+  string name = 2; // The provider's name
+}

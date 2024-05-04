@@ -13,7 +13,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     protos.push("src/proto/category.proto");
 
     #[cfg(feature = "users")]
-    protos.push("src/proto/user.proto");
+    {
+        protos.push("src/proto/user.proto");
+        protos.push("src/proto/session.proto");
+        protos.push("src/proto/account_provider.proto");
+    }
 
     if !protos.is_empty() {
         #[cfg(feature = "tonic")]
@@ -32,7 +36,9 @@ fn build(protos: &[&str]) -> Result<(), Box<dyn std::error::Error>> {
                 {
                     true
                 } else {
-                    f.ends_with("users.proto")
+                    (f.ends_with("users.proto")
+                        || f.ends_with("session.proto")
+                        || f.ends_with("account_provider.proto"))
                         && cfg!(all(feature = "users", feature = "tonic-rpc"))
                 },
             ) // for traits in services
