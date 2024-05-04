@@ -12,23 +12,25 @@ message OauthSession {
   string user_id = 4; // Owner of the session
 }
 
+// A service for mutating sessions
 service MutateSessions {
-  rpc Create (OauthSession) returns (ResponseSession);
-  rpc Update (OauthSession) returns (ResponseSession);
-  rpc Delete (common.SearchQuery) returns (ResponseSession);
+  // Creates a session
+  rpc Create (OauthSession) returns (ResponseSessions);
+  // Updates a session
+  rpc Update (OauthSession) returns (ResponseSessions);
+  // Deletes a session with a provided session token
+  rpc Delete (common.SearchQuery) returns (ResponseSessions);
 }
 
+// A service for querying sessions
 service QuerySessions {
   // get sessions by a user id
   rpc UserSessions (common.SearchQuery) returns (ResponseSessions);
 }
 
-message ResponseSession {
-  common.Status status = 1;
-  OauthSession session = 2; // A session
-}
 
+// A response message for Oauth Sessions
 message ResponseSessions {
-  common.Status status = 1;
+  common.Status status = 1; // Response status
   repeated OauthSession sessions = 2; // A list of users
 }

@@ -6,16 +6,21 @@ package oauth.account;
 
 // An oauth account
 message OauthAccount {
-  string id = 1; // 
+  string id = 1; // An ID assigned by the linked OauthAccount-Provider
   string account_provider_id = 2; // A reference to the account provider
 }
 
+// A service for mutating oauth accounts
 service MutateOauthAccount {
+  // Creates an Oauth Account
   rpc Create (OauthAccount) returns (ResponseOauthAccount);
+  // Deletes an Oauth Account
   rpc Delete (common.SearchQuery) returns (ResponseOauthAccount);
 }
 
+
+// A response holding an account from an oauth provider
 message ResponseOauthAccount {
-  common.Status status = 1;
-  OauthAccount provider = 2; // A session
+  common.Status status = 1; // Response status
+  OauthAccount provider = 2; // An oauth account
 }

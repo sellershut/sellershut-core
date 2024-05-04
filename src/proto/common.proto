@@ -4,13 +4,15 @@ import "google/protobuf/any.proto";
 
 package common;
 
-// Define a message for the request
+// An empty message
 message Empty {}
 
+// A message holding a string, for string based searching
 message SearchQuery {
-  string query = 1;
+  string query = 1; // A parameter sent in with requests
 }
 
+// Response status
 message Status {
   // The status code, which should be an enum value of [google.rpc.Code][google.rpc.Code].
   int32 code = 1;

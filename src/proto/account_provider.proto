@@ -11,21 +11,22 @@ message OauthProvider {
 }
 
 service MutateOauthProviders {
+  // Creates an OauthProvider
   rpc Create (OauthProvider) returns (ResponseOauthProvider);
+  // Updates an OauthProvider
   rpc Update (OauthProvider) returns (ResponseOauthProvider);
+  // Takes a name Deletes an OauthProvider associated with it
   rpc Delete (common.SearchQuery) returns (ResponseOauthProvider);
 }
 
+// A service to query Oauth Providers
 service QueryOauthProviders {
+  // Gets OauthProvides
   rpc AccountProviders (common.Empty) returns (ResponseOauthProvider);
 }
 
+// A response holding an oauth provider (in some cases, multiple)
 message ResponseOauthProvider {
-  common.Status status = 1;
-  OauthProvider provider = 2; // A session
-}
-
-message ResponseOauthProviders {
-  common.Status status = 1;
+  common.Status status = 1; // Response Status
   repeated OauthProvider providers = 2; // A list of users
 }

@@ -26,38 +26,47 @@ message User {
   uint64 updated = 9; // Updated
 }
 
+// A service for mutating users
 service MutateUsers {
+  // Create a user
   rpc Create (User) returns (ResponseUser);
+  // Update a user with the corresponding id
   rpc Update (User) returns (ResponseUser);
+  // Update a user
   rpc Delete (User) returns (ResponseUser);
 }
 
+// A service for querying users
 service QueryUsers {
-  rpc Users (common.Empty) returns (ResponseUsers);
+  // Gets all users
+  rpc Users (common.Empty) returns (ResponseUser);
+  // Gets a user with the provided id
   rpc UserById (common.SearchQuery) returns (ResponseUser);
+  // Gets a user with the email address
   rpc UserByEmail (common.SearchQuery) returns (ResponseUser);
+  // Gets a user with the oauth account
   rpc UserByAccount (OauthAccountParams) returns (ResponseUser);
-  rpc Search (common.SearchQuery) returns (ResponseUsers);
+  // Search for users (TODO: what are we searching by?)
+  rpc Search (common.SearchQuery) returns (ResponseUser);
+  // Get a user and session with the provided session token
   rpc SessionAndUser (common.SearchQuery) returns (ResponseSessionAndUser);
 }
 
+// A response containing a user and a session
 message ResponseSessionAndUser {
-  common.Status status = 1;
+  common.Status status = 1; // response status
   oauth.session.OauthSession session = 2; // An oauth session
   User user = 3; // A user
 }
 
+// An oauth account combination
 message OauthAccountParams {
-  oauth.account_provider.OauthProvider provider = 1;
-  oauth.account.OauthAccount account = 2;
+  oauth.account_provider.OauthProvider provider = 1; // An OauthAccount Provider
+  oauth.account.OauthAccount account = 2; // An oauth account (containing the ID that the provider assigned)
 }
 
+// A user response
 message ResponseUser {
-  common.Status status = 1;
-  User user = 2; // A user
-}
-
-message ResponseUsers {
-  common.Status status = 1;
+  common.Status status = 1; // Response status
   repeated User users = 2; // A list of users
 }
