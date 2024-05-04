@@ -1,7 +1,7 @@
 use sellershut_core::{
     category::{
         query_categories_server::{QueryCategories, QueryCategoriesServer},
-        ResponseCategories
+        ResponseCategories,
     },
     common::{Empty, SearchQuery, Status},
 };

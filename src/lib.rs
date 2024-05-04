@@ -26,3 +26,6 @@ pub mod user;
 #[cfg_attr(docsrs, doc(cfg(feature = "users")))]
 /// Oauth utilities
 pub mod oauth;
+
+mod tables;
+pub use tables::*;
