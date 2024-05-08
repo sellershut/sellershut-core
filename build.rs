@@ -49,7 +49,14 @@ fn build(protos: &[&str]) -> Result<(), Box<dyn std::error::Error>> {
         let mut ids: Vec<&str> = Vec::new();
 
         #[cfg(feature = "users")]
-        ids.push(".user.User.id");
+        {
+            ids.push(".user.User.id");
+            ids.push(".oauth.session.OauthSession.user_id");
+            ids.push(".oauth.account.OauthAccount.user_id");
+            ids.push(".oauth.account.OauthAccount.account_provider_id");
+            ids.push(".oauth.session.OauthSession.account_provider_id");
+            ids.push(".oauth.account_provider.OauthProvider.id");
+        }
 
         #[cfg(feature = "categories")]
         ids.push(".category.Category.id");
@@ -57,7 +64,7 @@ fn build(protos: &[&str]) -> Result<(), Box<dyn std::error::Error>> {
         for field in ids {
             config = config.field_attribute(
                 field,
-                "#[serde(deserialize_with = \"crate::utils::deserialize_surreal_thing\")]",
+                "#[serde(deserialize_with = \"crate::utils::ser_de::deserialize_surreal_thing\")]",
             );
         }
 
@@ -69,7 +76,7 @@ fn build(protos: &[&str]) -> Result<(), Box<dyn std::error::Error>> {
         for field in id_list {
             config = config.field_attribute(
                 field,
-                "#[serde(deserialize_with = \"crate::utils::deserialize_surreal_things\")]",
+                "#[serde(deserialize_with = \"crate::utils::ser_de::deserialize_surreal_things\")]",
             );
         }
 
@@ -79,13 +86,54 @@ fn build(protos: &[&str]) -> Result<(), Box<dyn std::error::Error>> {
         for field in optional_ids {
             config = config.field_attribute(
                 field,
-                "#[serde(deserialize_with = \"crate::utils::deserialize_optional_surreal_thing\")]",
+                "#[serde(deserialize_with = \"crate::utils::ser_de::deserialize_optional_surreal_thing\")]",
             );
+        }
+
+        // serialize
+        #[cfg(feature = "categories")]
+        {
+            config = config.field_attribute(
+                ".category.Category.id",
+                "#[serde(serialize_with = \"crate::utils::ser_de::category::serialize_string\")]",
+                ).field_attribute(".category.Category.sub_categories",
+                    "#[serde(serialize_with = \"crate::utils::ser_de::category::serialize_strings\")]",
+                ).field_attribute(".category.Category.parent_id",
+                    "#[serde(serialize_with = \"crate::utils::ser_de::category::serialize_optional_string\")]",
+                );
+        }
+
+        #[cfg(feature = "users")]
+        {
+            config = config
+                .field_attribute(
+                    ".user.User.id",
+                    "#[serde(serialize_with = \"crate::utils::ser_de::user::serialize_string\")]",
+                )
+                .field_attribute(
+                    ".oauth.session.OauthSession.user_id",
+                    "#[serde(serialize_with = \"crate::utils::ser_de::user::serialize_string\")] #[serde(rename =\"in\")]",
+                )
+                .field_attribute(
+                    ".oauth.account.OauthAccount.user_id",
+                    "#[serde(serialize_with = \"crate::utils::ser_de::user::serialize_string\")] #[serde(rename = \"in\")]",
+                )
+                .field_attribute(
+                    ".oauth.account.OauthAccount.account_provider_id",
+                    "#[serde(serialize_with = \"crate::utils::ser_de::account::serialize_string\")] #[serde(rename = \"out\")]",
+                )
+                .field_attribute(
+                    ".oauth.session.OauthSession.account_provider_id",
+                    "#[serde(serialize_with = \"crate::utils::ser_de::account::serialize_string\")] #[serde(rename = \"out\")]",
+                )
+                .field_attribute(
+                    ".oauth.account_provider.OauthProvider.id",
+                    "#[serde(serialize_with = \"crate::utils::ser_de::account::serialize_string\")]",
+                );
         }
 
         config
     };
-
 
     config.compile(protos, &["src"])?;
 

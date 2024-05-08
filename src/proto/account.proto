@@ -8,6 +8,7 @@ package oauth.account;
 message OauthAccount {
   string id = 1; // An ID assigned by the linked OauthAccount-Provider
   string account_provider_id = 2; // A reference to the account provider
+  string user_id = 3; // A reference to the related user owning the account
 }
 
 // A service for mutating oauth accounts
