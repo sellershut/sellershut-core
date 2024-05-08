@@ -94,36 +94,8 @@ pub fn deserialize_optional_surreal_thing<'de, D>(d: D) -> Result<Option<String>
 where
     D: serde::Deserializer<'de>,
 {
-    use serde::Deserialize;
-
-    // define a visitor that deserializes
-    struct SurrealThingVisitor;
-
-    impl<'de> serde::de::Visitor<'de> for SurrealThingVisitor {
-        type Value = Option<String>;
-
-        fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
-            formatter.write_str("an optional surrealdb record id")
-        }
-
-        fn visit_none<E>(self) -> Result<Self::Value, E>
-            where
-                E: serde::de::Error, {
-            Ok(None)
-        }
-
-        fn visit_map<A>(self, map: A) -> Result<Self::Value, A::Error>
-        where
-            A: serde::de::MapAccess<'de>,
-        {
-            let record_id: surrealdb_core::sql::Thing =
-                Deserialize::deserialize(serde::de::value::MapAccessDeserializer::new(map))?;
-
-            Ok(Some(id_to_string(&record_id.id)))
-        }
-    }
-
-    d.deserialize_any(SurrealThingVisitor)
+    let value: Option<surrealdb_core::sql::Thing> = serde::Deserialize::deserialize(d)?;
+    Ok(value.map(|f| id_to_string(&f.id)))
 }
 
 #[cfg(all(feature = "surrealdb", feature = "categories"))]
