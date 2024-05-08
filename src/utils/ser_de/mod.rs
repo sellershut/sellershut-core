@@ -103,7 +103,7 @@ where
         type Value = Option<String>;
 
         fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
-            formatter.write_str("a surrealdb record id")
+            formatter.write_str("an optional surrealdb record id")
         }
 
         fn visit_map<A>(self, map: A) -> Result<Self::Value, A::Error>
