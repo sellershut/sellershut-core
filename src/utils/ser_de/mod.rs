@@ -106,6 +106,12 @@ where
             formatter.write_str("an optional surrealdb record id")
         }
 
+        fn visit_none<E>(self) -> Result<Self::Value, E>
+            where
+                E: serde::de::Error, {
+            Ok(None)
+        }
+
         fn visit_map<A>(self, map: A) -> Result<Self::Value, A::Error>
         where
             A: serde::de::MapAccess<'de>,
