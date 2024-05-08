@@ -32,3 +32,6 @@ pub use tables::*;
 
 #[cfg(all(feature = "serde", feature = "surrealdb"))]
 pub(crate) mod utils;
+
+#[cfg(test)]
+mod tests;

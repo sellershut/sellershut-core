@@ -3,7 +3,7 @@ use sellershut_core::{
         query_categories_server::{QueryCategories, QueryCategoriesServer},
         ResponseCategories,
     },
-    common::{Empty, SearchQuery, Status},
+    common::{Empty, SearchQuery, SearchQueryOptional, Status},
 };
 use tonic::{transport::Server, Response};
 
@@ -47,7 +47,7 @@ impl QueryCategories for CategoryService {
     #[allow(clippy::type_complexity, clippy::type_repetition_in_bounds)]
     async fn sub_categories(
         &self,
-        _request: tonic::Request<SearchQuery>,
+        _request: tonic::Request<SearchQueryOptional>,
     ) -> Result<tonic::Response<ResponseCategories>, tonic::Status> {
         todo!()
     }

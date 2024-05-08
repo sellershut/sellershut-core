@@ -42,6 +42,8 @@ fn build(protos: &[&str]) -> Result<(), Box<dyn std::error::Error>> {
     #[cfg(all(feature = "serde", any(feature = "categories", feature = "users")))]
     let mut config = config.type_attribute(serde_type_attrs.0, serde_type_attrs.1);
 
+    let mut config = config.type_attribute(".", "#[cfg_attr(test, derive(fake::Dummy))]");
+
     #[cfg(all(feature = "serde", feature = "surrealdb"))]
     let config = {
         let mut ids: Vec<&str> = Vec::new();
@@ -83,6 +85,7 @@ fn build(protos: &[&str]) -> Result<(), Box<dyn std::error::Error>> {
 
         config
     };
+
 
     config.compile(protos, &["src"])?;
 
