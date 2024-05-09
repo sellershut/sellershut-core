@@ -31,69 +31,74 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 #[cfg(feature = "tonic")]
 fn build(protos: &[&str]) -> Result<(), Box<dyn std::error::Error>> {
-    let mut config = tonic_build::configure()
-        .build_server(cfg!(feature = "tonic-rpc")) // for traits in services
-        .build_client(cfg!(feature = "tonic-rpc"))
-        .build_transport(cfg!(feature = "tonic-rpc"));
+    use std::{env, path::PathBuf};
 
-    #[cfg(all(feature = "serde", any(feature = "categories", feature = "users")))]
-    let serde_type_attrs = serde_type_attrs();
+    let out_dir = PathBuf::from(env::var("OUT_DIR").unwrap());
 
-    #[cfg(all(feature = "serde", any(feature = "categories", feature = "users")))]
-    let mut config = config.type_attribute(serde_type_attrs.0, serde_type_attrs.1);
+    for feature in protos {
+        let mut config = tonic_build::configure()
+            .build_server(cfg!(feature = "tonic-rpc")) // for traits in services
+            .build_client(cfg!(feature = "tonic-rpc"))
+            .build_transport(cfg!(feature = "tonic-rpc"));
 
-    let mut config = config.type_attribute(".", "#[cfg_attr(test, derive(fake::Dummy))]");
+        #[cfg(all(feature = "serde", any(feature = "categories", feature = "users")))]
+        let serde_type_attrs = serde_type_attrs();
 
-    #[cfg(all(feature = "serde", feature = "surrealdb"))]
-    let config = {
-        let mut ids: Vec<&str> = Vec::new();
+        #[cfg(all(feature = "serde", any(feature = "categories", feature = "users")))]
+        let mut config = config.type_attribute(serde_type_attrs.0, serde_type_attrs.1);
 
-        #[cfg(feature = "users")]
-        {
-            ids.push(".user.User.id");
-            ids.push(".oauth.session.OauthSession.user_id");
-            ids.push(".oauth.account.OauthAccount.user_id");
-            ids.push(".oauth.account.OauthAccount.account_provider_id");
-            ids.push(".oauth.session.OauthSession.account_provider_id");
-            ids.push(".oauth.account_provider.OauthProvider.id");
-        }
+        let mut config = config.type_attribute(".", "#[cfg_attr(test, derive(fake::Dummy))]");
 
-        #[cfg(feature = "categories")]
-        ids.push(".category.Category.id");
+        #[cfg(all(feature = "serde", feature = "surrealdb"))]
+        let config = {
+            let mut ids: Vec<&str> = Vec::new();
 
-        for field in ids {
-            config = config.field_attribute(
+            #[cfg(feature = "users")]
+            {
+                ids.push(".user.User.id");
+                ids.push(".oauth.session.OauthSession.user_id");
+                ids.push(".oauth.account.OauthAccount.user_id");
+                ids.push(".oauth.account.OauthAccount.account_provider_id");
+                ids.push(".oauth.session.OauthSession.account_provider_id");
+                ids.push(".oauth.account_provider.OauthProvider.id");
+            }
+
+            #[cfg(feature = "categories")]
+            ids.push(".category.Category.id");
+
+            for field in ids {
+                config = config.field_attribute(
                 field,
                 "#[serde(deserialize_with = \"crate::utils::ser_de::deserialize_surreal_thing\")]",
             );
-        }
+            }
 
-        let mut id_list: Vec<&str> = Vec::new();
+            let mut id_list: Vec<&str> = Vec::new();
 
-        #[cfg(feature = "categories")]
-        id_list.push(".category.Category.sub_categories");
+            #[cfg(feature = "categories")]
+            id_list.push(".category.Category.sub_categories");
 
-        for field in id_list {
-            config = config.field_attribute(
+            for field in id_list {
+                config = config.field_attribute(
                 field,
                 "#[serde(deserialize_with = \"crate::utils::ser_de::deserialize_surreal_things\")]",
             );
-        }
+            }
 
-        let mut optional_ids: Vec<&str> = Vec::new();
-        optional_ids.push(".category.Category.parent_id");
+            let mut optional_ids: Vec<&str> = Vec::new();
+            optional_ids.push(".category.Category.parent_id");
 
-        for field in optional_ids {
-            config = config.field_attribute(
+            for field in optional_ids {
+                config = config.field_attribute(
                 field,
                 "#[serde(deserialize_with = \"crate::utils::ser_de::deserialize_optional_surreal_thing\")]",
             );
-        }
+            }
 
-        // serialize
-        #[cfg(feature = "categories")]
-        {
-            config = config.field_attribute(
+            // serialize
+            #[cfg(feature = "categories")]
+            {
+                config = config.field_attribute(
                 ".category.Category.id",
                 "#[serde(serialize_with = \"crate::utils::ser_de::category::serialize_string\")]",
                 ).field_attribute(".category.Category.sub_categories",
@@ -101,11 +106,11 @@ fn build(protos: &[&str]) -> Result<(), Box<dyn std::error::Error>> {
                 ).field_attribute(".category.Category.parent_id",
                     "#[serde(serialize_with = \"crate::utils::ser_de::category::serialize_optional_string\")]",
                 );
-        }
+            }
 
-        #[cfg(feature = "users")]
-        {
-            config = config
+            #[cfg(feature = "users")]
+            {
+                config = config
                 .field_attribute(
                     ".user.User.id",
                     "#[serde(serialize_with = \"crate::utils::ser_de::user::serialize_string\")]",
@@ -130,12 +135,22 @@ fn build(protos: &[&str]) -> Result<(), Box<dyn std::error::Error>> {
                     ".oauth.account_provider.OauthProvider.id",
                     "#[serde(serialize_with = \"crate::utils::ser_de::account::serialize_string\")]",
                 );
-        }
+            }
+
+            config
+        };
+
+        println!("feature: {feature:?}");
+        let name = feature
+            .split('/')
+            .last()
+            .and_then(|last| last.split('.').next())
+            .expect("valid proto paths");
 
         config
-    };
-
-    config.compile(protos, &["src"])?;
+            .file_descriptor_set_path(out_dir.join(format!("{name}_descriptor.bin")))
+            .compile(&[feature], &["src"])?;
+    }
 
     Ok(())
 }
