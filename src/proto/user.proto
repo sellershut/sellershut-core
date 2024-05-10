@@ -28,10 +28,8 @@ message User {
 
 // A service for mutating users
 service MutateUsers {
-  // Create a user
-  rpc Create (User) returns (ResponseUser);
-  // Update a user with the corresponding id
-  rpc Update (User) returns (ResponseUser);
+  // Create/Update a user
+  rpc Upsert (User) returns (ResponseUser);
   // Update a user
   rpc Delete (User) returns (ResponseUser);
 }
