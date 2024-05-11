@@ -110,7 +110,19 @@ fn build(protos: &[&str]) -> Result<(), Box<dyn std::error::Error>> {
 
             #[cfg(feature = "users")]
             {
+                config = config.field_attribute(
+                    ".user.User.user_type",
+                    "#[cfg_attr(test, dummy(faker = \"0..1\"))]",
+                );
                 config = config
+                .field_attribute(
+                    ".user.User.user_type",
+                    "#[serde(serialize_with = \"crate::utils::ser_de::user::serialise_user_type\")]",
+                )
+                .field_attribute(
+                    ".user.User.user_type",
+                    "#[serde(deserialize_with = \"crate::utils::ser_de::user::deserialise_user_type\")]",
+                )
                 .field_attribute(
                     ".user.User.id",
                     "#[serde(serialize_with = \"crate::utils::ser_de::user::serialize_string\")]",
