@@ -29,25 +29,25 @@ message User {
 // A service for mutating users
 service MutateUsers {
   // Create a user
-  rpc Create (User) returns (ResponseUser);
+  rpc Create (User) returns (ResponseUsers);
   // Update a user by id
-  rpc Update (User) returns (ResponseUser);
+  rpc Update (User) returns (ResponseUsers);
   // Update a user
-  rpc Delete (User) returns (ResponseUser);
+  rpc Delete (common.SearchQuery) returns (ResponseUsers);
 }
 
 // A service for querying users
 service QueryUsers {
   // Gets all users
-  rpc Users (common.Empty) returns (ResponseUser);
+  rpc Users (common.Empty) returns (ResponseUsers);
   // Gets a user with the provided id
-  rpc UserById (common.SearchQuery) returns (ResponseUser);
+  rpc UserById (common.SearchQuery) returns (ResponseUsers);
   // Gets a user with the email address
-  rpc UserByEmail (common.SearchQuery) returns (ResponseUser);
+  rpc UserByEmail (common.SearchQuery) returns (ResponseUsers);
   // Gets a user with the oauth account
-  rpc UserByAccount (OauthAccountParams) returns (ResponseUser);
+  rpc UserByAccount (OauthAccountParams) returns (ResponseUsers);
   // Search for users (TODO: what are we searching by?)
-  rpc Search (common.SearchQuery) returns (ResponseUser);
+  rpc Search (common.SearchQuery) returns (ResponseUsers);
   // Get a user and session with the provided session token
   rpc SessionAndUser (common.SearchQuery) returns (ResponseSessionAndUser);
 }
@@ -66,7 +66,7 @@ message OauthAccountParams {
 }
 
 // A user response
-message ResponseUser {
+message ResponseUsers {
   common.Status status = 1; // Response status
   repeated User users = 2; // A list of users
 }
