@@ -44,7 +44,7 @@ fn build(protos: &[&str]) -> Result<(), Box<dyn std::error::Error>> {
         #[cfg(feature = "sqlx")]
         {
             if cfg!(feature = "categories") {
-                config = config.type_attribute(".Category", "#[derive(sqlx::FromRow]");
+                config = config.type_attribute(".category.Category", "#[derive(sqlx::FromRow)]");
             }
         }
 

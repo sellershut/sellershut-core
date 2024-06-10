@@ -20,7 +20,7 @@ users = ["tonic"]
 tonic = ["dep:tonic", "tonic/codegen", "tonic/prost", "prost"]
 tonic-rpc = ["tonic", "tonic/transport"]
 serde = ["dep:serde", "serde/derive"]
-sqlx = ["dep:sqlx"]
+sqlx = ["dep:sqlx", "sqlx/macros"]
 
 [dev-dependencies]
 criterion = "0.5.1"
