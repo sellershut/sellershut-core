@@ -30,7 +30,7 @@ pub mod oauth;
 mod tables;
 pub use tables::*;
 
-#[cfg(all(feature = "serde", feature = "surrealdb"))]
+#[cfg(feature = "serde")]
 pub(crate) mod utils;
 
 #[cfg(test)]

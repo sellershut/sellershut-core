@@ -41,80 +41,29 @@ fn build(protos: &[&str]) -> Result<(), Box<dyn std::error::Error>> {
             .build_client(cfg!(feature = "tonic-rpc"))
             .build_transport(cfg!(feature = "tonic-rpc"));
 
+        #[cfg(feature = "sqlx")]
+        {
+            if cfg!(feature = "categories") {
+                config = config.type_attribute(".Category", "#[derive(sqlx::FromRow]");
+            }
+        }
+
         #[cfg(all(feature = "serde", any(feature = "categories", feature = "users")))]
         let serde_type_attrs = serde_type_attrs();
 
         #[cfg(all(feature = "serde", any(feature = "categories", feature = "users")))]
-        let mut config = config.type_attribute(serde_type_attrs.0, serde_type_attrs.1);
+        let config = config.type_attribute(serde_type_attrs.0, serde_type_attrs.1);
 
         let mut config = config.type_attribute(".", "#[cfg_attr(test, derive(fake::Dummy))]");
 
-        #[cfg(all(feature = "serde", feature = "surrealdb"))]
-        let config = {
-            let mut ids: Vec<&str> = Vec::new();
+        config = config.field_attribute(
+            ".user.User.user_type",
+            "#[cfg_attr(test, dummy(faker = \"0..1\"))]",
+        );
 
-            #[cfg(feature = "users")]
-            {
-                ids.push(".user.User.id");
-                ids.push(".oauth.session.OauthSession.user_id");
-                ids.push(".oauth.account.OauthAccount.user_id");
-                ids.push(".oauth.account.OauthAccount.account_provider_id");
-                ids.push(".oauth.session.OauthSession.account_provider_id");
-                ids.push(".oauth.account_provider.OauthProvider.id");
-            }
-
-            #[cfg(feature = "categories")]
-            ids.push(".category.Category.id");
-
-            for field in ids {
-                config = config.field_attribute(
-                field,
-                "#[serde(deserialize_with = \"crate::utils::ser_de::deserialize_surreal_thing\")]",
-            );
-            }
-
-            let mut id_list: Vec<&str> = Vec::new();
-
-            #[cfg(feature = "categories")]
-            id_list.push(".category.Category.sub_categories");
-
-            for field in id_list {
-                config = config.field_attribute(
-                field,
-                "#[serde(deserialize_with = \"crate::utils::ser_de::deserialize_surreal_things\")]",
-            );
-            }
-
-            let mut optional_ids: Vec<&str> = Vec::new();
-            optional_ids.push(".category.Category.parent_id");
-
-            for field in optional_ids {
-                config = config.field_attribute(
-                field,
-                "#[serde(deserialize_with = \"crate::utils::ser_de::deserialize_optional_surreal_thing\")]",
-            );
-            }
-
-            // serialize
-            #[cfg(feature = "categories")]
-            {
-                config = config.field_attribute(
-                ".category.Category.id",
-                "#[serde(serialize_with = \"crate::utils::ser_de::category::serialize_string\")]",
-                ).field_attribute(".category.Category.sub_categories",
-                    "#[serde(serialize_with = \"crate::utils::ser_de::category::serialize_strings\")]",
-                ).field_attribute(".category.Category.parent_id",
-                    "#[serde(serialize_with = \"crate::utils::ser_de::category::serialize_optional_string\")]",
-                );
-            }
-
-            #[cfg(feature = "users")]
-            {
-                config = config.field_attribute(
-                    ".user.User.user_type",
-                    "#[cfg_attr(test, dummy(faker = \"0..1\"))]",
-                );
-                config = config
+        #[cfg(all(feature = "users", feature = "serde"))]
+        {
+            config = config
                 .field_attribute(
                     ".user.User.user_type",
                     "#[serde(serialize_with = \"crate::utils::ser_de::user::serialise_user_type\")]",
@@ -122,36 +71,8 @@ fn build(protos: &[&str]) -> Result<(), Box<dyn std::error::Error>> {
                 .field_attribute(
                     ".user.User.user_type",
                     "#[serde(deserialize_with = \"crate::utils::ser_de::user::deserialise_user_type\")]",
-                )
-                .field_attribute(
-                    ".user.User.id",
-                    "#[serde(serialize_with = \"crate::utils::ser_de::user::serialize_string\")]",
-                )
-                .field_attribute(
-                    ".oauth.session.OauthSession.user_id",
-                    "#[serde(serialize_with = \"crate::utils::ser_de::user::serialize_string\")] #[serde(rename =\"in\")]",
-                )
-                .field_attribute(
-                    ".oauth.account.OauthAccount.user_id",
-                    "#[serde(serialize_with = \"crate::utils::ser_de::user::serialize_string\")] #[serde(rename = \"in\")]",
-                )
-                .field_attribute(
-                    ".oauth.account.OauthAccount.account_provider_id",
-                    "#[serde(serialize_with = \"crate::utils::ser_de::account::serialize_string\")] #[serde(rename = \"out\")]",
-                )
-                .field_attribute(
-                    ".oauth.session.OauthSession.account_provider_id",
-                    "#[serde(serialize_with = \"crate::utils::ser_de::account::serialize_string\")] #[serde(rename = \"out\")]",
-                )
-                .field_attribute(
-                    ".oauth.account_provider.OauthProvider.id",
-                    "#[serde(serialize_with = \"crate::utils::ser_de::account::serialize_string\")]",
                 );
-            }
-
-            config
-        };
-
+        }
         println!("feature: {feature:?}");
         let name = feature
             .split('/')

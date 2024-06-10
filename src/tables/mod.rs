@@ -1,9 +1,6 @@
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Serialize};
 
-#[cfg(all(feature = "surrealdb", any(feature = "users", feature = "categories")))]
-use surrealdb_core::sql::Table as SurrealdbTable;
-
 #[non_exhaustive]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "serde", serde(rename_all = "snake_case"))]
@@ -46,12 +43,5 @@ impl std::fmt::Display for Table {
                 Table::OauthAccount => "oauth_account",
             }
         )
-    }
-}
-
-#[cfg(all(feature = "surrealdb", any(feature = "users", feature = "categories")))]
-impl From<Table> for SurrealdbTable {
-    fn from(value: Table) -> Self {
-        SurrealdbTable::from(value.to_string())
     }
 }

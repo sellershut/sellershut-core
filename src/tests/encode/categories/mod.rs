@@ -1,6 +1,3 @@
-#[cfg(feature = "surrealdb")]
-mod surreal;
-
 use fake::{Fake, Faker};
 use prost::Message;
 
