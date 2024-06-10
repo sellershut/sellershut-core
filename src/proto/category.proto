@@ -7,7 +7,7 @@ import "proto/common.proto";
 // The Category Query service
 service QueryCategories {
   // gets all categories
-  rpc Categories (common.Empty) returns (ResponseCategories) {}
+  rpc Categories (common.Paginate) returns (ResponseCategories) {}
   rpc CategoryById (common.SearchQuery) returns (ResponseCategories) {}
   rpc SubCategories (common.SearchQueryOptional) returns (ResponseCategories) {}
   rpc Search (common.SearchQuery) returns (ResponseCategories) {}

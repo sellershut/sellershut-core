@@ -22,7 +22,7 @@ service MutateOauthProviders {
 // A service to query Oauth Providers
 service QueryOauthProviders {
   // Gets OauthProvides
-  rpc AccountProviders (common.Empty) returns (ResponseOauthProvider);
+  rpc AccountProviders (common.Paginate) returns (ResponseOauthProvider);
 }
 
 // A response holding an oauth provider (in some cases, multiple)

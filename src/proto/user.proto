@@ -39,7 +39,7 @@ service MutateUsers {
 // A service for querying users
 service QueryUsers {
   // Gets all users
-  rpc Users (common.Empty) returns (ResponseUsers);
+  rpc Users (common.Paginate) returns (ResponseUsers);
   // Gets a user with the provided id
   rpc UserById (common.SearchQuery) returns (ResponseUsers);
   // Gets a user with the email address
