@@ -6,7 +6,7 @@ package oauth.session;
 
 // An oauth session
 message OauthSession {
-  int64 expires = 1; // Created
+  int64 expires_at = 1; // Timestamp (millisecond precision) indicating when this session was created
   string session_token = 2; // An oauth session token
   string account_provider_id = 3; // An oauth account provider id
   string user_id = 4; // Owner of the session
