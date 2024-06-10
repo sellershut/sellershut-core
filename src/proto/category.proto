@@ -30,6 +30,8 @@ message Category {
   repeated string sub_categories = 3; // A list of sub categories of this current category
   optional string image_url = 4; // An optional image denoting this category
   optional string parent_id = 5; // The direct parent of this category (if applicable)
+  uint64 created = 6; // Timestamp indicating when this category was created
+  uint64 updated = 7; // Timestamp indicating when this category was last updated
 }
 
 /// A structure holding a list of categories
