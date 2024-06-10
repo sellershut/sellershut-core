@@ -22,8 +22,8 @@ message User {
   optional string avatar = 5; // A link to a user's profile picture
   UserType user_type = 6; // The type of user
   repeated string phone_numbers = 7; // A list of phone numbers
-  uint64 created = 8; // Created
-  uint64 updated = 9; // Updated
+  int64 created = 8; // Created
+  int64 updated = 9; // Updated
 }
 
 // A service for mutating users
