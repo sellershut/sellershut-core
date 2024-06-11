@@ -38,4 +38,5 @@ message Category {
 message ResponseCategories {
   common.Status status = 1; // response status
   repeated Category categories = 2; // A list of categories
+  int64 total_available = 3; // total number of available categories matching condition
 }
