@@ -50,3 +50,15 @@ message Status {
   // message types for APIs to use.
   // repeated google.protobuf.Any details = 3;
 }
+
+// PageInfo represents information about the pagination state.
+message PageInfo {
+  // Whether there is a next page available.
+  bool hasNextPage = 1;
+  // Whether there is a previous page available.
+  bool hasPreviousPage = 2;
+  // The cursor marking the start of the current page.
+  optional string startCursor = 3;
+  // The cursor marking the end of the current page.
+  optional string endCursor = 4;
+}

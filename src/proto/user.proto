@@ -22,32 +22,32 @@ message User {
   optional string avatar = 5; // A link to a user's profile picture
   UserType user_type = 6; // The type of user
   repeated string phone_numbers = 7; // A list of phone numbers
-  int64 created_at = 6; // Timestamp (millisecond precision) indicating when this user was created
-  int64 updated_at = 7; // Timestamp (millisecond precision) indicating when this user was last updated
+  int64 created_at = 8; // Timestamp (millisecond precision) indicating when this user was created
+  int64 updated_at = 9; // Timestamp (millisecond precision) indicating when this user was last updated
 }
 
 // A service for mutating users
 service MutateUsers {
   // Create a user
-  rpc Create (User) returns (ResponseUsers);
+  rpc Create (User) returns (MutationResponse);
   // Update a user by id
-  rpc Update (User) returns (ResponseUsers);
+  rpc Update (User) returns (MutationResponse);
   // Update a user
-  rpc Delete (common.SearchQuery) returns (ResponseUsers);
+  rpc Delete (common.SearchQuery) returns (MutationResponse);
 }
 
 // A service for querying users
 service QueryUsers {
   // Gets all users
-  rpc Users (common.Paginate) returns (ResponseUsers);
+  rpc Users (common.Paginate) returns (QueryResponse);
   // Gets a user with the provided id
-  rpc UserById (common.SearchQuery) returns (ResponseUsers);
+  rpc UserById (common.SearchQuery) returns (QueryResponse);
   // Gets a user with the email address
-  rpc UserByEmail (common.SearchQuery) returns (ResponseUsers);
+  rpc UserByEmail (common.SearchQuery) returns (QueryResponse);
   // Gets a user with the oauth account
-  rpc UserByAccount (OauthAccountParams) returns (ResponseUsers);
+  rpc UserByAccount (OauthAccountParams) returns (QueryResponse);
   // Search for users (TODO: what are we searching by?)
-  rpc Search (common.SearchQuery) returns (ResponseUsers);
+  rpc Search (common.SearchQuery) returns (QueryResponse);
   // Get a user and session with the provided session token
   rpc SessionAndUser (common.SearchQuery) returns (ResponseSessionAndUser);
 }
@@ -69,4 +69,32 @@ message OauthAccountParams {
 message ResponseUsers {
   common.Status status = 1; // Response status
   repeated User users = 2; // A list of users
+}
+
+// A response node
+message Node {
+    // A user
+    User node = 1;
+    // Pagination cursor
+    string cursor = 2;
+}
+
+// Connection contains a list of Node objects and the pagination information.
+message Connection {
+  // The list of nodes in the current page.
+  repeated Node edges = 1;
+  // Information about the pagination state.
+  common.PageInfo pageInfo = 2;
+}
+
+// QueryResponse
+message QueryResponse {
+  common.Status status = 1; // response status
+  Connection connection = 2; // The connection object containing the paginated data.
+}
+
+// MutationResponse
+message MutationResponse {
+  common.Status status = 1; // response status
+  optional User category = 2; // data
 }

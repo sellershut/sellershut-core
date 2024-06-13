@@ -7,20 +7,20 @@ import "proto/common.proto";
 // The Category Query service
 service QueryCategories {
   // gets all categories
-  rpc Categories (common.Paginate) returns (ResponseCategories) {}
-  rpc CategoryById (common.SearchQuery) returns (ResponseCategories) {}
-  rpc SubCategories (common.SearchQueryOptional) returns (ResponseCategories) {}
-  rpc Search (common.SearchQuery) returns (ResponseCategories) {}
+  rpc Categories (common.Paginate) returns (QueryResponse) {}
+  rpc CategoryById (common.SearchQuery) returns (QueryResponse) {}
+  rpc SubCategories (common.SearchQueryOptional) returns (QueryResponse) {}
+  rpc Search (common.SearchQuery) returns (QueryResponse) {}
 }
 
 // Category Mutation Service
 service MutateCategories {
   // Create a category
-  rpc Create (Category) returns (ResponseCategories) {}
+  rpc Create (Category) returns (MutationResponse) {}
   // Update a category
-  rpc Update (Category) returns (ResponseCategories) {}
+  rpc Update (Category) returns (MutationResponse) {}
   // Delete a category
-  rpc Delete (common.SearchQuery) returns (ResponseCategories) {}
+  rpc Delete (common.SearchQuery) returns (MutationResponse) {}
 }
 
 // A category
@@ -34,9 +34,30 @@ message Category {
   int64 updated_at = 7; // Timestamp (millisecond precision) indicating when this category was last updated
 }
 
-/// A structure holding a list of categories
-message ResponseCategories {
+// A response node
+message Node {
+    // A category
+    Category node = 1;
+    // Pagination cursor
+    string cursor = 2;
+}
+
+// Connection contains a list of Node objects and the pagination information.
+message Connection {
+  // The list of nodes in the current page.
+  repeated Node edges = 1;
+  // Information about the pagination state.
+  common.PageInfo pageInfo = 2;
+}
+
+// QueryResponse
+message QueryResponse {
   common.Status status = 1; // response status
-  repeated Category categories = 2; // A list of categories
-  int64 total_available = 3; // total number of available categories matching condition
+  Connection connection = 2; // The connection object containing the paginated data.
+}
+
+// MutationResponse
+message MutationResponse {
+  common.Status status = 1; // response status
+  optional Category category = 2; // data
 }
