@@ -7,20 +7,20 @@ import "proto/common.proto";
 // The Category Query service
 service QueryCategories {
   // gets all categories
-  rpc Categories (common.Paginate) returns (QueryResponse) {}
-  rpc CategoryById (common.SearchQuery) returns (QueryResponse) {}
-  rpc SubCategories (common.SearchQueryOptional) returns (QueryResponse) {}
-  rpc Search (common.SearchQuery) returns (QueryResponse) {}
+  rpc Categories (common.Paginate) returns (Response) {}
+  rpc CategoryById (common.SearchQuery) returns (SimpleResponse) {}
+  rpc SubCategories (common.SearchQueryOptional) returns (Response) {}
+  rpc Search (common.SearchQuery) returns (Response) {}
 }
 
 // Category Mutation Service
 service MutateCategories {
   // Create a category
-  rpc Create (Category) returns (MutationResponse) {}
+  rpc Create (Category) returns (SimpleResponse) {}
   // Update a category
-  rpc Update (Category) returns (MutationResponse) {}
+  rpc Update (Category) returns (SimpleResponse) {}
   // Delete a category
-  rpc Delete (common.SearchQuery) returns (MutationResponse) {}
+  rpc Delete (common.SearchQuery) returns (SimpleResponse) {}
 }
 
 // A category
@@ -51,13 +51,13 @@ message Connection {
 }
 
 // QueryResponse
-message QueryResponse {
+message Response {
   common.Status status = 1; // response status
   Connection connection = 2; // The connection object containing the paginated data.
 }
 
 // MutationResponse
-message MutationResponse {
+message SimpleResponse {
   common.Status status = 1; // response status
   optional Category category = 2; // data
 }
