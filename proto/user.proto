@@ -1,0 +1,162 @@
+syntax = "proto2";
+
+package users;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+// A platform user
+message User {
+  // Unique identifier
+  required string id = 1;
+
+  // The username of the user
+  required string username = 2;
+
+  // URL to the user's avatar image
+  optional string avatar_url = 3;
+
+  // List of IDs of users who follow this user
+  repeated string followers = 4;
+
+  // Email address of the user
+  optional string email  = 5;
+
+  // Timestamp indicating when the user profile was created
+  required google.protobuf.Timestamp created_at = 6;
+
+  // Timestamp indicating the last time the user's profile was updated
+  required google.protobuf.Timestamp updated_at = 7;
+
+  // The inbox URL where the user receives messages and activities
+  required string inbox = 8;
+
+  // The public key for the user
+  required string public_key = 9;
+
+  // Optional private key
+  optional string private_key = 10;
+
+  // Whether the user is a local user on this platform
+  required bool local = 11;
+
+  // Timestamp indicating the last time the user's data was refreshed or synchronized
+  required google.protobuf.Timestamp last_refreshed_at = 12;
+
+  // Display name for the user, a human-readable name for their profile
+  optional string display_name = 13;
+
+  // The ActivityPub ID for this user, used for federation
+  required string ap_id = 14;
+}
+
+// Request to create a new user in the ActivityPub platform
+message CreateUserRequest {
+  // The user object that should be created
+  required User user = 1;
+}
+
+// Request to follow a user, typically with their ActivityPub ID and follow URL
+message FollowUserRequest {
+  // The ActivityPub ID of the user to follow
+  required string ap_id = 1;
+
+  // The URL to follow the user, used in ActivityPub to establish a relationship
+  required string follow_url = 2;
+}
+
+// Response after successfully following a user, returns the followed user data
+message FollowUserResponse {
+  // The user that was followed
+  required User user = 1;
+}
+
+// Response after successfully creating a new user
+message CreateUserResponse {
+  // The user that was created
+  required User user = 1;
+}
+
+// Request to upsert (create or update) a user in the ActivityPub platform
+message UpsertUserRequest {
+  // The user object that should be created or updated
+  required User user = 1;
+}
+
+// Response after successfully upserting a user (creating or updating)
+message UpsertUserResponse {
+  // The user that was created or updated
+  required User user = 1;
+}
+
+// Request to delete a user by ID, typically when a user is deactivated or deleted
+message DeleteUserRequest {
+  // The ID of the user to delete
+  required string id = 1;
+}
+
+// Response after successfully deleting a user, returns the deleted user data
+message DeleteUserResponse {
+  // The user that was deleted
+  required User user = 1;
+}
+
+// Request to query a user by their username, useful for lookups by the public name
+message QueryUserByNameRequest {
+  // The username to search for
+  required string username = 1;
+
+  // Whether to restrict search to local users only
+  optional bool local = 2;
+}
+
+// Response to query a user by username, may return the user or no result
+message QueryUserByNameResponse {
+  // The user matching the username
+  optional User user = 1;
+}
+
+// Request to query a user by their unique ID, such as their ActivityPub ID
+message QueryUserByIdRequest {
+  // The ID of the user to query
+  required string id = 1;
+}
+
+// Response to query a user by their ID, may return the user or no result
+message QueryUserByIdResponse {
+  // The user matching the ID
+  optional User user = 1;
+}
+
+// Response to query a list of all users, typically used for federated queries
+message QueryUsersResponse {
+  // A list of users on the platform
+  repeated User users = 1; 
+}
+
+// Service for mutating user data (create, update, delete, follow)
+service MutateUsers {
+  // Create a new user on the ActivityPub platform
+  rpc CreateUser (CreateUserRequest) returns (CreateUserResponse) {}
+
+  // Create or update an existing user
+  rpc UpsertUser (UpsertUserRequest) returns (UpsertUserResponse) {}
+
+  // Delete a user by their ID
+  rpc DeleteUser (DeleteUserRequest) returns (DeleteUserResponse) {}
+
+  // Follow another user by their ActivityPub ID
+  rpc FollowUser (FollowUserRequest) returns (FollowUserResponse) {}
+}
+
+// Service for querying user data
+service QueryUsers {
+  // Query all users, typically used for federation purposes
+  rpc QueryUsers (google.protobuf.Empty) returns (QueryUsersResponse) {}
+
+  // Query a user by their username, often for finding users by their profile name
+  rpc QueryUserByName (QueryUserByNameRequest) returns (QueryUserByNameResponse) {}
+
+  // Query a user by their ActivityPub ID
+  rpc QueryUserById (QueryUserByIdRequest) returns (QueryUserByIdResponse) {}
+}
