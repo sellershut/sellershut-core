@@ -4,6 +4,8 @@ use sellershut_core::users::QueryUserByIdRequest;
 use sellershut_core::users::QueryUserByIdResponse;
 use sellershut_core::users::QueryUserByNameRequest;
 use sellershut_core::users::QueryUserByNameResponse;
+use sellershut_core::users::QueryUsersFollowingRequest;
+use sellershut_core::users::QueryUsersFollowingResponse;
 use sellershut_core::users::QueryUsersResponse;
 use tonic::{transport::Server, Request, Response, Status};
 
@@ -30,6 +32,20 @@ impl QueryUsers for UserService {
         &self,
         request: Request<QueryUserByIdRequest>,
     ) -> Result<Response<QueryUserByIdResponse>, Status> {
+        todo!()
+    }
+
+    async fn query_user_following(
+        &self,
+        request: Request<QueryUsersFollowingRequest>,
+    ) -> Result<Response<QueryUsersFollowingResponse>, Status> {
+        todo!()
+    }
+
+    async fn query_user_followers(
+        &self,
+        request: Request<QueryUsersFollowingRequest>,
+    ) -> Result<Response<QueryUsersFollowingResponse>, Status> {
         todo!()
     }
 }
