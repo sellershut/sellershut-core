@@ -5,6 +5,7 @@ edition = "2021"
 license = "MIT OR Apache-2.0"
 
 [dependencies]
+base64 = { version = "0.22.1", optional = true }
 prost = "0.13.4"
 serde = { version = "1.0.217", optional = true }
 time = { version = "0.3.37", optional = true }
@@ -13,7 +14,10 @@ tonic-types = "0.12.3"
 
 [features]
 default = []
+categories = ["dep:base64"]
 users = []
+rpc-client-categories = ["categories"]
+rpc-server-categories = ["categories"]
 rpc-client-users = ["users"]
 rpc-server-users = ["users"]
 serde = ["serde/derive"]
