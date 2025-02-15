@@ -1,18 +1,15 @@
 tonic::include_proto!("common.pagination");
 
-#[cfg(feature = "rpc-server-categories")]
 use base64::{prelude::BASE64_URL_SAFE_NO_PAD, Engine};
 use cursor::Index;
 
 /// Pagination cursor
 #[derive(Debug, PartialEq, Eq)]
-#[cfg(feature = "rpc-server-categories")]
 pub struct CursorBuilder {
     id: String,
     dt: String,
 }
 
-#[cfg(feature = "rpc-server-categories")]
 impl CursorBuilder {
     /// Create cursor
     pub fn new(id: &str, dt: &str) -> Self {
@@ -109,18 +106,167 @@ pub fn query_count(max: i32, pagination: &Index) -> i32 {
 
 #[cfg(test)]
 mod tests {
-    use super::{cursor::cursor_value::CursorType, CursorBuilder};
+    use crate::common::pagination::cursor::{cursor_value, CursorValue};
+
+    use super::*;
 
     #[test]
-    fn test_cursor() {
-        let cursor =
-            CursorBuilder::new("9ckyrhcx6jun6n_7a8adq", "2023-01-11T11:32:07.853915+00:00");
+    fn test_cursor_builder_new() {
+        let id = "123";
+        let dt = "2025-02-15T12:00:00";
+        let cursor_builder = CursorBuilder::new(id, dt);
 
-        let encode = cursor.encode();
+        assert_eq!(cursor_builder.id(), id);
+        assert_eq!(cursor_builder.dt(), dt);
+    }
 
-        let cursor_type = CursorType::After(encode);
-        let decode = CursorBuilder::decode(&cursor_type).unwrap();
+    #[test]
+    fn test_cursor_builder_encode() {
+        let id = "123";
+        let dt = "2025-02-15T12:00:00";
+        let cursor_builder = CursorBuilder::new(id, dt);
 
-        assert_eq!(decode, cursor);
+        let encoded = cursor_builder.encode();
+        let expected = BASE64_URL_SAFE_NO_PAD.encode(format!("{}|{}", dt, id));
+
+        assert_eq!(encoded, expected);
+    }
+
+    #[test]
+    fn test_cursor_builder_decode_success() {
+        let id = "123";
+        let dt = "2025-02-15T12:00:00";
+        let encoded = BASE64_URL_SAFE_NO_PAD.encode(format!("{}|{}", dt, id));
+
+        let cursor_type = cursor_value::CursorType::After(encoded.clone());
+        let cursor = CursorBuilder::decode(&cursor_type);
+
+        assert!(cursor.is_ok());
+        let decoded_cursor = cursor.unwrap();
+
+        assert_eq!(decoded_cursor.id(), id);
+        assert_eq!(decoded_cursor.dt(), dt);
+    }
+
+    #[test]
+    fn test_cursor_builder_decode_failure_missing_tokens() {
+        let encoded = BASE64_URL_SAFE_NO_PAD.encode("invalid_cursor_data");
+
+        let cursor_type = cursor_value::CursorType::After(encoded);
+        let cursor = CursorBuilder::decode(&cursor_type);
+
+        assert!(cursor.is_err());
+    }
+
+    #[test]
+    fn test_cursor_builder_is_paginating_from_left_first() {
+        let cursor_value = CursorValue {
+            cursor_type: Some(cursor_value::CursorType::After(
+                "encoded_cursor".to_string(),
+            )),
+            ..Default::default()
+        };
+
+        let pagination = Cursor {
+            index: Some(Index::First(10)),
+            cursor_value: Some(cursor_value),
+        };
+
+        assert!(CursorBuilder::is_paginating_from_left(&pagination));
+    }
+
+    #[test]
+    fn test_cursor_builder_is_paginating_from_left_not_first() {
+        let cursor_value = CursorValue {
+            cursor_type: Some(cursor_value::CursorType::After(
+                "encoded_cursor".to_string(),
+            )),
+            ..Default::default()
+        };
+
+        let pagination = Cursor {
+            index: Some(Index::Last(10)),
+            cursor_value: Some(cursor_value),
+        };
+
+        assert!(!CursorBuilder::is_paginating_from_left(&pagination));
+    }
+
+    #[test]
+    fn test_cursor_builder_is_cursor_unavailable_with_no_cursor() {
+        let pagination = Cursor {
+            index: Some(Index::First(10)),
+            cursor_value: None,
+        };
+
+        assert!(CursorBuilder::is_cursor_unavailable(&pagination));
+    }
+
+    #[test]
+    fn test_cursor_builder_is_cursor_unavailable_with_invalid_cursor_type() {
+        let cursor_value = CursorValue {
+            cursor_type: None,
+            ..Default::default()
+        };
+
+        let pagination = Cursor {
+            index: Some(Index::First(10)),
+            cursor_value: Some(cursor_value),
+        };
+
+        assert!(CursorBuilder::is_cursor_unavailable(&pagination));
+    }
+
+    #[test]
+    fn test_cursor_builder_is_cursor_unavailable_with_valid_cursor_type() {
+        let cursor_value = CursorValue {
+            cursor_type: Some(cursor_value::CursorType::After(
+                "encoded_cursor".to_string(),
+            )),
+            ..Default::default()
+        };
+
+        let pagination = Cursor {
+            index: Some(Index::First(10)),
+            cursor_value: Some(cursor_value),
+        };
+
+        assert!(!CursorBuilder::is_cursor_unavailable(&pagination));
+    }
+
+    #[test]
+    fn test_query_count_within_max() {
+        let pagination = Index::First(5);
+        let max = 10;
+        let count = query_count(max, &pagination);
+
+        assert_eq!(count, 5);
+    }
+
+    #[test]
+    fn test_query_count_exceeds_max() {
+        let pagination = Index::First(15);
+        let max = 10;
+        let count = query_count(max, &pagination);
+
+        assert_eq!(count, 10);
+    }
+
+    #[test]
+    fn test_query_count_for_last_index() {
+        let pagination = Index::Last(5);
+        let max = 10;
+        let count = query_count(max, &pagination);
+
+        assert_eq!(count, 5);
+    }
+
+    #[test]
+    fn test_query_count_for_last_index_exceeds_max() {
+        let pagination = Index::Last(15);
+        let max = 10;
+        let count = query_count(max, &pagination);
+
+        assert_eq!(count, 10);
     }
 }
