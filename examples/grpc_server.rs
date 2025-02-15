@@ -41,13 +41,6 @@ impl QueryUsers for UserService {
     ) -> Result<Response<QueryUsersFollowingResponse>, Status> {
         todo!()
     }
-
-    async fn query_user_followers(
-        &self,
-        request: Request<QueryUsersFollowingRequest>,
-    ) -> Result<Response<QueryUsersFollowingResponse>, Status> {
-        todo!()
-    }
 }
 
 #[tokio::main]
