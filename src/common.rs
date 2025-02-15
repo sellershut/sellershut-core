@@ -1,3 +1,3 @@
 /// Pagination
-#[cfg(feature = "rpc-server-categories")]
+#[cfg(any(feature = "categories"))]
 pub mod pagination;
