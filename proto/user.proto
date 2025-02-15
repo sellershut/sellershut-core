@@ -140,6 +140,18 @@ message QueryUsersResponse {
   repeated User users = 1; 
 }
 
+// Response to query a list of all users following the provided user
+message QueryUsersFollowingRequest {
+  // The ID of the user to query
+  required string id = 1;
+}
+
+// Response to query a list of all users following the provided user
+message QueryUsersFollowingResponse {
+  // A list of users on the platform
+  repeated User users = 1; 
+}
+
 // Service for mutating user data (create, update, delete, follow)
 service MutateUsers {
   // Create a new user on the ActivityPub platform
@@ -165,4 +177,10 @@ service QueryUsers {
 
   // Query a user by their ActivityPub ID
   rpc QueryUserById (QueryUserByIdRequest) returns (QueryUserByIdResponse) {}
+
+  // Query followers
+  rpc QueryUserFollowers (QueryUsersFollowingRequest) returns (QueryUsersFollowingResponse) {}
+
+  // Query following
+  rpc QueryUserFollowing (QueryUsersFollowingRequest) returns (QueryUsersFollowingResponse) {}
 }
