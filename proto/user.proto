@@ -48,6 +48,12 @@ message User {
 
   // The ActivityPub ID for this user, used for federation
   required string ap_id = 14;
+
+  // Outbox for messages produced by user
+  required string outbox = 15;
+
+  // A quick summary or bio by the user about themselves
+  optional string summary = 16;
 }
 
 // Request to create a new user in the ActivityPub platform
