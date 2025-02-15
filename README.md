@@ -19,13 +19,23 @@ A foundational library providing core types and entities used across the platfor
 
 ### Users Features
 
-These features are related to the types and functionalities used by the users-service
+These features are related to the types and functionalities used by the [users-service](https://github.com/sellershut/users-service)
 
 - **`users`**: Enables the `User` type definition
 - **`rpc-client-users`**: Generates gRPC client implementation
     - Implicitly enables the `users` feature
 - **`rpc-server-users`**: Generates a gRPC server implementations
     - Implicitly enables the `users` feature
+
+### Categories Features
+
+These features are related to the types and functionalities used by the [categories-service](https://github.com/sellershut/categories-service)
+
+- **`categories`**: Enables the `Category` type definition and pagination utilities
+- **`rpc-client-categories`**: Generates gRPC client implementation
+    - Implicitly enables the `categories` feature
+- **`rpc-server-categories`**: Generates a gRPC server implementations
+    - Implicitly enables the `categories` feature
 
 ### Common Features
 
