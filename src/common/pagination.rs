@@ -1,15 +1,18 @@
 tonic::include_proto!("common.pagination");
 
+#[cfg(feature = "rpc-server-categories")]
 use base64::{prelude::BASE64_URL_SAFE_NO_PAD, Engine};
 use cursor::Index;
 
 /// Pagination cursor
 #[derive(Debug, PartialEq, Eq)]
+#[cfg(feature = "rpc-server-categories")]
 pub struct CursorBuilder {
     id: String,
     dt: String,
 }
 
+#[cfg(feature = "rpc-server-categories")]
 impl CursorBuilder {
     /// Create cursor
     pub fn new(id: &str, dt: &str) -> Self {
@@ -105,6 +108,7 @@ pub fn query_count(max: i32, pagination: &Index) -> i32 {
 }
 
 #[cfg(test)]
+#[cfg(feature = "rpc-server-categories")]
 mod tests {
     use crate::common::pagination::cursor::{cursor_value, CursorValue};
 
