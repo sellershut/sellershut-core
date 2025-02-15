@@ -82,10 +82,7 @@ impl CursorBuilder {
     pub fn is_cursor_unavailable(pagination: &Cursor) -> bool {
         if let Some(value) = pagination.cursor_value.as_ref() {
             match value.cursor_type.as_ref() {
-                Some(val) => match val {
-                    cursor::cursor_value::CursorType::After(_) => false,
-                    cursor::cursor_value::CursorType::Before(_) => false,
-                },
+                Some(_) => false,
                 None => true,
             }
         } else {
@@ -272,5 +269,78 @@ mod tests {
         let count = query_count(max, &pagination);
 
         assert_eq!(count, 10);
+    }
+
+    #[test]
+    fn test_cursor_builder_decode_before_cursor_type() {
+        let id = "123";
+        let dt = "2025-02-15T12:00:00";
+        let encoded = BASE64_URL_SAFE_NO_PAD.encode(format!("{}|{}", dt, id));
+
+        // Create a CursorType::Before
+        let cursor_type = cursor_value::CursorType::Before(encoded.clone());
+        let cursor = CursorBuilder::decode(&cursor_type);
+
+        assert!(cursor.is_ok());
+        let decoded_cursor = cursor.unwrap();
+
+        assert_eq!(decoded_cursor.id(), id);
+        assert_eq!(decoded_cursor.dt(), dt);
+    }
+
+    #[test]
+    fn test_paginating_from_left_with_after_cursor_and_first_index() {
+        let pagination = Cursor {
+            index: Some(Index::First(1)),
+            cursor_value: Some(CursorValue {
+                cursor_type: Some(cursor_value::CursorType::After("cursor_value".to_string())),
+            }),
+        };
+
+        assert!(CursorBuilder::is_paginating_from_left(&pagination));
+    }
+
+    #[test]
+    fn test_paginating_from_left_with_before_cursor_and_first_index() {
+        let pagination = Cursor {
+            index: Some(Index::First(1)),
+            cursor_value: Some(CursorValue {
+                cursor_type: Some(cursor_value::CursorType::Before("cursor_value".to_string())),
+            }),
+        };
+
+        assert!(CursorBuilder::is_paginating_from_left(&pagination));
+    }
+
+    #[test]
+    fn test_paginating_from_left_with_none_cursor_value_and_first_index() {
+        let pagination = Cursor {
+            index: Some(Index::First(1)),
+            cursor_value: None,
+        };
+
+        assert!(CursorBuilder::is_paginating_from_left(&pagination));
+    }
+
+    #[test]
+    fn test_paginating_from_left_with_non_first_index_and_cursor_value_some() {
+        let pagination = Cursor {
+            index: Some(Index::Last(1)),
+            cursor_value: Some(CursorValue {
+                cursor_type: Some(cursor_value::CursorType::After("cursor_value".to_string())),
+            }),
+        };
+
+        assert!(!CursorBuilder::is_paginating_from_left(&pagination));
+    }
+
+    #[test]
+    fn test_paginating_from_left_with_non_first_index_and_cursor_value_some_cursor_type_none() {
+        let pagination = Cursor {
+            index: Some(Index::First(1)),
+            cursor_value: Some(CursorValue { cursor_type: None }),
+        };
+
+        assert!(CursorBuilder::is_paginating_from_left(&pagination));
     }
 }
