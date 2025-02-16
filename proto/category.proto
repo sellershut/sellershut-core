@@ -88,8 +88,8 @@ service QueryCategories {
 service MutateCategories {
   // Create a category
   rpc Create (UpsertCategoryRequest) returns (Category) {}
-  // Update a category
-  rpc Update (UpsertCategoryRequest) returns (Category) {}
+  // Upsert a category
+  rpc Upsert (UpsertCategoryRequest) returns (Category) {}
   // Delete a category
   rpc Delete (DeleteCategoryRequest) returns (google.protobuf.Empty) {}
 }
