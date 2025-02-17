@@ -19,6 +19,11 @@ message Category {
   bool local = 9; // Local state
 }
 
+message SubCategory {
+    string name = 1;
+    string ap_id = 2;
+}
+
 // A response node
 message Node {
   // A category
@@ -37,7 +42,7 @@ message Connection {
 
 // Delete a category
 message DeleteCategoryRequest {
-  string id = 1; // The ID of the category to delete
+  string ap_id = 1; // The ID of the category to delete
 }
 
 // Create a category
@@ -52,7 +57,7 @@ message UpsertCategoryRequest {
 
 // Get a category
 message GetCategoryRequest {
-  string id = 1; // The ID of the category to retrieve
+  string ap_id = 1; // The ID of the category to retrieve
 }
 
 // Get sub categories
@@ -84,7 +89,7 @@ service QueryCategories {
   // gets all categories
   rpc Categories (common.pagination.Cursor) returns (Connection) {}
   // get category by id
-  rpc CategoryById (GetCategoryRequest) returns (GetCategoryResponse) {}
+  rpc CategoryByApId (GetCategoryRequest) returns (GetCategoryResponse) {}
   // get subcategories
   rpc SubCategories (GetSubCategoriesRequest) returns (Connection) {}
 }
