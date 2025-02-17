@@ -98,7 +98,7 @@ message UpsertUserResponse {
 // Request to delete a user by ID, typically when a user is deactivated or deleted
 message DeleteUserRequest {
   // The ID of the user to delete
-  string id = 1;
+  string ap_id = 1;
 }
 
 // Response after successfully deleting a user, returns the deleted user data
@@ -123,13 +123,13 @@ message QueryUserByNameResponse {
 }
 
 // Request to query a user by their unique ID, such as their ActivityPub ID
-message QueryUserByIdRequest {
+message QueryUserByApIdRequest {
   // The ID of the user to query
-  string id = 1;
+  string ap_id = 1;
 }
 
 // Response to query a user by their ID, may return the user or no result
-message QueryUserByIdResponse {
+message QueryUserByApIdResponse {
   // The user matching the ID
   optional User user = 1;
 }
@@ -143,7 +143,7 @@ message QueryUsersResponse {
 // Response to query a list of all users following the provided user
 message QueryUsersFollowingRequest {
   // The ID of the user to query
-  string id = 1;
+  string ap_id = 1;
 }
 
 // Response to query a list of all users following the provided user
@@ -176,7 +176,7 @@ service QueryUsers {
   rpc QueryUserByName (QueryUserByNameRequest) returns (QueryUserByNameResponse) {}
 
   // Query a user by their ActivityPub ID
-  rpc QueryUserById (QueryUserByIdRequest) returns (QueryUserByIdResponse) {}
+  rpc QueryUserByApId (QueryUserByApIdRequest) returns (QueryUserByApIdResponse) {}
 
   // Query following
   rpc QueryUserFollowing (QueryUsersFollowingRequest) returns (QueryUsersFollowingResponse) {}
