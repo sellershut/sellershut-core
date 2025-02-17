@@ -38,13 +38,16 @@ message Connection {
 // Delete a category
 message DeleteCategoryRequest {
   string id = 1; // The ID of the category to delete
-  CategoryEvent event = 2; // Type of event
 }
 
-// Update a category
+// Create a category
+message CreateCategoryRequest {
+  Category category = 1; // Payload
+}
+
+// Upsert a category
 message UpsertCategoryRequest {
   Category category = 1; // Payload
-  CategoryEvent event = 2; // Type of event
 }
 
 // Get a category
@@ -58,14 +61,16 @@ message GetSubCategoriesRequest {
   common.pagination.Cursor pagination = 2; // Pagination Properties
 }
 
-// Category events
-enum CategoryEvent {
-  // Created
-  CREATE = 0;
-  // Updated
-  UPDATE = 1;
-  // Deleted
-  DELETE = 2;
+message GetCategoryResponse {
+  optional Category category = 1;
+}
+
+message CreateCategoryResponse {
+  Category category = 1;
+}
+
+message UpsertCategoryResponse {
+  Category category = 1;
 }
 
 // Cache categories
@@ -79,7 +84,7 @@ service QueryCategories {
   // gets all categories
   rpc Categories (common.pagination.Cursor) returns (Connection) {}
   // get category by id
-  rpc CategoryById (GetCategoryRequest) returns (Category) {}
+  rpc CategoryById (GetCategoryRequest) returns (GetCategoryResponse) {}
   // get subcategories
   rpc SubCategories (GetSubCategoriesRequest) returns (Connection) {}
 }
@@ -87,9 +92,9 @@ service QueryCategories {
 // Category Mutation Service
 service MutateCategories {
   // Create a category
-  rpc Create (UpsertCategoryRequest) returns (Category) {}
+  rpc Create (CreateCategoryRequest) returns (CreateCategoryResponse) {}
   // Upsert a category
-  rpc Upsert (UpsertCategoryRequest) returns (Category) {}
+  rpc Upsert (UpsertCategoryRequest) returns (UpsertCategoryResponse) {}
   // Delete a category
   rpc Delete (DeleteCategoryRequest) returns (google.protobuf.Empty) {}
 }
