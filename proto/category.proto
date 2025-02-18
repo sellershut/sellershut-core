@@ -7,7 +7,7 @@ import "google/protobuf/timestamp.proto";
 import "proto/common/pagination.proto";
 
 // A category
-message Category {
+message CategoryDetailed {
   string id = 1; // A unique identifier, it should be an 21 character ID
   string name = 2; // Human readable name
   repeated SubCategory sub_categories = 3; // A list of sub categories of this current category
@@ -19,7 +19,7 @@ message Category {
   bool local = 9; // Local state
 }
 
-message CategoryMutate {
+message Category {
   string id = 1; // A unique identifier, it should be an 21 character ID
   string name = 2; // Human readable name
   repeated string sub_categories = 3; // A list of sub categories of this current category
@@ -59,12 +59,12 @@ message DeleteCategoryRequest {
 
 // Create a category
 message CreateCategoryRequest {
-  CategoryMutate category = 1; // Payload
+  Category category = 1; // Payload
 }
 
 // Upsert a category
 message UpsertCategoryRequest {
-  CategoryMutate category = 1; // Payload
+  Category category = 1; // Payload
 }
 
 // Get a category
@@ -79,7 +79,7 @@ message GetSubCategoriesRequest {
 }
 
 message GetCategoryResponse {
-  optional Category category = 1;
+  optional CategoryDetailed category = 1;
 }
 
 message CreateCategoryResponse {
