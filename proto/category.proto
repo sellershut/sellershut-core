@@ -72,6 +72,16 @@ message GetCategoryRequest {
   string ap_id = 1; // The ID of the category to retrieve
 }
 
+// Get a category
+message GetCategoryByIdRequest {
+  string id = 1; // The ID of the category to retrieve
+}
+
+// Get a category
+message GetCategoryByIdResponse {
+  optional Category category = 1; // The category
+}
+
 // Get sub categories
 message GetSubCategoriesRequest {
   optional string id = 1; // The optional ID of the category to retrieve. Skip to return top-level categories
@@ -100,6 +110,8 @@ message CacheCategoriesConnectionRequest {
 service QueryCategories {
   // gets all categories
   rpc Categories (common.pagination.Cursor) returns (Connection) {}
+  // get category by id
+  rpc CategoryById (GetCategoryByIdRequest) returns (GetCategoryByIdResponse) {}
   // get category by id
   rpc CategoryByApId (GetCategoryRequest) returns (GetCategoryResponse) {}
   // get subcategories
