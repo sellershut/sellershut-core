@@ -10,6 +10,18 @@ import "proto/common/pagination.proto";
 message Category {
   string id = 1; // A unique identifier, it should be an 21 character ID
   string name = 2; // Human readable name
+  repeated SubCategory sub_categories = 3; // A list of sub categories of this current category
+  optional string image_url = 4; // An optional image denoting this category
+  optional string parent_id = 5; // The direct parent of this category (if applicable)
+  google.protobuf.Timestamp created_at = 6; // Timestamp indicating when this category was created
+  google.protobuf.Timestamp updated_at = 7; // Timestamp indicating when this category was last updated
+  string ap_id = 8; // Activity pub id
+  bool local = 9; // Local state
+}
+
+message CategoryMutate {
+  string id = 1; // A unique identifier, it should be an 21 character ID
+  string name = 2; // Human readable name
   repeated string sub_categories = 3; // A list of sub categories of this current category
   optional string image_url = 4; // An optional image denoting this category
   optional string parent_id = 5; // The direct parent of this category (if applicable)
@@ -47,12 +59,12 @@ message DeleteCategoryRequest {
 
 // Create a category
 message CreateCategoryRequest {
-  Category category = 1; // Payload
+  CategoryMutate category = 1; // Payload
 }
 
 // Upsert a category
 message UpsertCategoryRequest {
-  Category category = 1; // Payload
+  CategoryMutate category = 1; // Payload
 }
 
 // Get a category
