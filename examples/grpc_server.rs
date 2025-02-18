@@ -1,7 +1,7 @@
 use sellershut_core::google::protobuf;
 use sellershut_core::users::query_users_server::{QueryUsers, QueryUsersServer};
-use sellershut_core::users::QueryUserByIdRequest;
-use sellershut_core::users::QueryUserByIdResponse;
+use sellershut_core::users::QueryUserByApIdRequest;
+use sellershut_core::users::QueryUserByApIdResponse;
 use sellershut_core::users::QueryUserByNameRequest;
 use sellershut_core::users::QueryUserByNameResponse;
 use sellershut_core::users::QueryUsersFollowingRequest;
@@ -28,10 +28,10 @@ impl QueryUsers for UserService {
         todo!()
     }
 
-    async fn query_user_by_id(
+    async fn query_user_by_ap_id(
         &self,
-        request: Request<QueryUserByIdRequest>,
-    ) -> Result<Response<QueryUserByIdResponse>, Status> {
+        request: Request<QueryUserByApIdRequest>,
+    ) -> Result<Response<QueryUserByApIdResponse>, Status> {
         todo!()
     }
 
