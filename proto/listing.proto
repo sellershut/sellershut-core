@@ -1,0 +1,99 @@
+syntax = "proto3";
+
+package listings;
+
+import "google/protobuf/timestamp.proto";
+import "proto/google/type/money.proto";
+import "proto/common/pagination.proto";
+import "google/protobuf/empty.proto";
+
+enum Status {
+  ACTIVE = 0;
+  SOLD = 1;
+  INACTIVE = 2;
+}
+
+message Listing {
+  string id = 1;
+  string user_ap_id = 2;
+  bool local = 3;
+  string title = 4;
+  string description = 5;
+  optional google.protobuf.Timestamp expires_at = 6;
+  google.protobuf.Timestamp created_at = 7;
+  google.protobuf.Timestamp updated_at = 8;
+  string ap_id = 9;
+  bool active = 10;
+  int32 quantity = 11;
+  Status status = 12;
+  google.type.Money price = 13;
+  // ap ids of likers
+  repeated string liked_by = 14;
+  string category_ap_id = 15;
+}
+
+// A response node
+message Node {
+  // A listing
+  Listing node = 1;
+  // Pagination cursor
+  string cursor = 2;
+}
+
+// Connection contains a list of Node objects and the pagination information.
+message Connection {
+  // The list of nodes in the current page.
+  repeated Node edges = 1;
+  // Information about the pagination state.
+  common.pagination.PageInfo pageInfo = 2;
+}
+
+
+message CreateListingRequest {
+  Listing listing = 1;
+}
+
+message CreateListingResponse {
+  Listing listing = 1;
+}
+
+message GetListingByApIdRequest {
+  string ap_id = 1;
+}
+
+message GetListingByApIdResponse {
+  Listing listing = 1;
+}
+
+message GetListingsByOwnerApIdRequest {
+  string ap_id = 1;
+}
+
+message GetListingsByCategoryApIdRequest {
+  string ap_id = 1;
+}
+
+message UpsertListingResponse {
+  Listing listing = 1;
+}
+
+message UpsertistingRequest {
+  Listing listing = 1;
+}
+
+message DeleteistingRequest {
+  string ap_id = 1;
+}
+
+service MutateListings {
+  rpc CreateListing (CreateListingRequest) returns (CreateListingResponse) {}
+  rpc UpsertListing (UpsertistingRequest) returns (UpsertListingResponse) {}
+  rpc DeleteListing (DeleteistingRequest) returns (google.protobuf.Empty) {}
+}
+
+service QueryListings {
+  rpc Listings (common.pagination.Cursor) returns (Connection) {}
+  rpc ListingsByApId (GetListingByApIdRequest) returns (GetListingByApIdResponse) {}
+  rpc ListingsByOwnerApId (GetListingsByOwnerApIdRequest) returns (Connection) {}
+  rpc ListingsByCategoryApId (GetListingsByCategoryApIdRequest) returns (Connection) {}
+}

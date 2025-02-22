@@ -4,7 +4,7 @@
 #[cfg_attr(docsrs, doc(cfg(feature = "users")))]
 pub mod users;
 
-#[cfg(any(feature = "categories", feature = "users"))]
+#[cfg(any(feature = "categories", feature = "users", feature = "listings"))]
 pub mod google;
 
 #[cfg(feature = "categories")]
@@ -12,7 +12,15 @@ pub mod google;
 /// Categories
 pub mod categories;
 
-#[cfg(any(feature = "categories", feature = "users"))]
-#[cfg_attr(docsrs, doc(cfg(any(feature = "categories", feature = "users"))))]
+#[cfg(feature = "listings")]
+#[cfg_attr(docsrs, doc(cfg(feature = "listings")))]
+/// Listings
+pub mod listings;
+
+#[cfg(any(feature = "categories", feature = "users", feature = "listings"))]
+#[cfg_attr(
+    docsrs,
+    doc(cfg(any(feature = "categories", feature = "users", feature = "listings")))
+)]
 /// Common
 pub mod common;

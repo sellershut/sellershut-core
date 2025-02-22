@@ -37,6 +37,16 @@ These features are related to the types and functionalities used by the [categor
 - **`rpc-server-categories`**: Generates a gRPC server implementations
     - Implicitly enables the `categories` feature
 
+### Listings Features
+
+These features are related to the types and functionalities used by the [listings-service](https://github.com/sellershut/listings-service)
+
+- **`listings`**: Enables the `Listing` type definition and pagination utilities
+- **`rpc-client-listings`**: Generates gRPC client implementation
+    - Implicitly enables the `listings` feature
+- **`rpc-server-listings`**: Generates a gRPC server implementations
+    - Implicitly enables the `listings` feature
+
 ### Common Features
 
 These features are used across multiple microservices or provide easy conversions between types:

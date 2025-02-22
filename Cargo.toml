@@ -16,10 +16,13 @@ tonic-types = "0.12.3"
 default = []
 categories = ["dep:base64"]
 users = []
+listings = []
 rpc-client-categories = ["categories"]
 rpc-server-categories = ["categories"]
 rpc-client-users = ["users"]
 rpc-server-users = ["users"]
+rpc-client-listings = ["listings"]
+rpc-server-listings = ["listings"]
 serde = ["serde/derive"]
 time = ["dep:time"]
 

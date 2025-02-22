@@ -1,3 +1,3 @@
 /// Pagination
-#[cfg(any(feature = "categories"))]
+#[cfg(any(feature = "categories", feature = "listings"))]
 pub mod pagination;
