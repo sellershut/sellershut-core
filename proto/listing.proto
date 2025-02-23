@@ -23,13 +23,12 @@ message Listing {
   google.protobuf.Timestamp created_at = 7;
   google.protobuf.Timestamp updated_at = 8;
   string ap_id = 9;
-  bool active = 10;
-  int32 quantity = 11;
-  Status status = 12;
-  google.type.Money price = 13;
+  int32 quantity = 10;
+  Status status = 11;
+  google.type.Money price = 12;
   // ap ids of likers
-  repeated string liked_by = 14;
-  string category_ap_id = 15;
+  repeated string liked_by = 13;
+  string category_ap_id = 14;
 }
 
 // A response node
