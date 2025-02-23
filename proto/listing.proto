@@ -6,6 +6,7 @@ import "google/protobuf/timestamp.proto";
 import "proto/google/type/money.proto";
 import "proto/common/pagination.proto";
 import "google/protobuf/empty.proto";
+import "proto/google/type/latlng.proto";
 
 enum Status {
   ACTIVE = 0;
@@ -29,6 +30,10 @@ message Listing {
   // ap ids of likers
   repeated string liked_by = 13;
   string category_ap_id = 14;
+  google.type.LatLng location = 15;
+  string city = 16;
+  optional string region = 17;
+  string country = 18;
 }
 
 // A response node
