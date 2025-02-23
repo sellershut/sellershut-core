@@ -34,6 +34,7 @@ message Listing {
   string city = 16;
   optional string region = 17;
   string country = 18;
+  bool is_unlimited = 19;
 }
 
 // A response node
