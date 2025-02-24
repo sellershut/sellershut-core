@@ -8,97 +8,107 @@ import "proto/common/pagination.proto";
 import "google/protobuf/empty.proto";
 import "proto/google/type/latlng.proto";
 
+// Status of a listing
 enum Status {
-  ACTIVE = 0;
-  SOLD = 1;
-  INACTIVE = 2;
+  ACTIVE = 0;    // The listing is active and visible to users
+  SOLD = 1;      // The listing has been marked as sold
+  INACTIVE = 2;  // The listing is inactive (e.g., expired or removed by the owner)
 }
 
+// Represents an individual listing in the e-commerce platform
 message Listing {
-  string id = 1;
-  string user_ap_id = 2;
-  bool local = 3;
-  string title = 4;
-  string description = 5;
-  optional google.protobuf.Timestamp expires_at = 6;
-  google.protobuf.Timestamp created_at = 7;
-  google.protobuf.Timestamp updated_at = 8;
-  string ap_id = 9;
-  int32 quantity = 10;
-  Status status = 11;
-  google.type.Money price = 12;
-  // ap ids of likers
-  repeated string liked_by = 13;
-  string category_ap_id = 14;
-  google.type.LatLng location = 15;
-  string city = 16;
-  optional string region = 17;
-  string country = 18;
-  bool is_unlimited = 19;
+  string id = 1;  // Unique identifier for the listing (internal use)
+  string user_ap_id = 2;  // The ActivityPub ID of the user who created the listing
+  bool local = 3;  // Indicates whether the listing is from the local instance or a remote ActivityPub server
+  string title = 4;  // The title of the listing
+  string description = 5;  // Detailed description of the item being sold
+  optional google.protobuf.Timestamp expires_at = 6;  // Expiry date of the listing, if applicable
+  google.protobuf.Timestamp created_at = 7;  // Timestamp when the listing was created
+  google.protobuf.Timestamp updated_at = 8;  // Timestamp when the listing was last updated
+  string ap_id = 9;  // The ActivityPub ID of the listing
+  int32 quantity = 10;  // The number of items available for sale (if applicable)
+  Status status = 11;  // The current status of the listing (ACTIVE, SOLD, or INACTIVE)
+  google.type.Money price = 12;  // The price of the item, including currency
+  repeated string liked_by = 13;  // A list of ActivityPub IDs of users who liked the listing
+  string category_ap_id = 14;  // The ActivityPub ID of the category this listing belongs to
+  google.type.LatLng location = 15;  // Geolocation coordinates of the item (latitude & longitude)
+  string city = 16;  // The city where the item is located
+  optional string region = 17;  // The region, state, or province where the item is located
+  string country = 18;  // The country where the item is listed
+  bool is_unlimited = 19;  // If true, the listing has unlimited quantity (e.g., services, digital goods)
+  repeated string media = 20;  // List of URLs pointing to images/videos of the listing
+  string thumbnail = 21;  // URL of the primary image used as a thumbnail
 }
 
-// A response node
+// Represents a response node containing a listing
 message Node {
-  // A listing
-  Listing node = 1;
-  // Pagination cursor
-  string cursor = 2;
+  Listing node = 1;  // A single listing object
+  string cursor = 2;  // Cursor for pagination, used in listing queries
 }
 
-// Connection contains a list of Node objects and the pagination information.
+// Represents a paginated response containing multiple listings
 message Connection {
-  // The list of nodes in the current page.
-  repeated Node edges = 1;
-  // Information about the pagination state.
-  common.pagination.PageInfo pageInfo = 2;
+  repeated Node edges = 1;  // List of nodes representing listings in the current page
+  common.pagination.PageInfo pageInfo = 2;  // Information about pagination state
 }
 
-
+// Request to create a new listing
 message CreateListingRequest {
-  Listing listing = 1;
+  Listing listing = 1;  // The listing details to be created
 }
 
+// Response after successfully creating a listing
 message CreateListingResponse {
-  Listing listing = 1;
+  Listing listing = 1;  // The created listing with its assigned ID
 }
 
+// Request to retrieve a listing by its ActivityPub ID
 message GetListingByApIdRequest {
-  string ap_id = 1;
+  string ap_id = 1;  // The ActivityPub ID of the requested listing
 }
 
+// Response containing a single listing
 message GetListingByApIdResponse {
-  Listing listing = 1;
+  Listing listing = 1;  // The requested listing
 }
 
+// Request to retrieve all listings by a specific owner
 message GetListingsByOwnerApIdRequest {
-  string ap_id = 1;
+  string ap_id = 1;  // The ActivityPub ID of the listing owner
 }
 
+// Request to retrieve all listings within a specific category
 message GetListingsByCategoryApIdRequest {
-  string ap_id = 1;
+  string ap_id = 1;  // The ActivityPub ID of the category
 }
 
-message UpsertListingResponse {
-  Listing listing = 1;
-}
-
+// Request to create or update a listing
 message UpsertistingRequest {
-  Listing listing = 1;
+  Listing listing = 1;  // The listing details (new or updated)
 }
 
+// Response after successfully creating or updating a listing
+message UpsertListingResponse {
+  Listing listing = 1;  // The newly created or updated listing
+}
+
+// Request to delete a listing
 message DeleteistingRequest {
-  string ap_id = 1;
+  string ap_id = 1;  // The ActivityPub ID of the listing to be deleted
 }
 
+// Service for mutating (creating, updating, or deleting) listings
 service MutateListings {
-  rpc CreateListing (CreateListingRequest) returns (CreateListingResponse) {}
-  rpc UpsertListing (UpsertistingRequest) returns (UpsertListingResponse) {}
-  rpc DeleteListing (DeleteistingRequest) returns (google.protobuf.Empty) {}
+  rpc CreateListing (CreateListingRequest) returns (CreateListingResponse);  // Create a new listing
+  rpc UpsertListing (UpsertistingRequest) returns (UpsertListingResponse);  // Create or update a listing
+  rpc DeleteListing (DeleteistingRequest) returns (google.protobuf.Empty);  // Delete a listing
 }
 
+// Service for querying listings
 service QueryListings {
-  rpc Listings (common.pagination.Cursor) returns (Connection) {}
-  rpc ListingsByApId (GetListingByApIdRequest) returns (GetListingByApIdResponse) {}
-  rpc ListingsByOwnerApId (GetListingsByOwnerApIdRequest) returns (Connection) {}
-  rpc ListingsByCategoryApId (GetListingsByCategoryApIdRequest) returns (Connection) {}
+  rpc Listings (common.pagination.Cursor) returns (Connection);  // Retrieve all listings with pagination
+  rpc ListingsByApId (GetListingByApIdRequest) returns (GetListingByApIdResponse);  // Get a listing by ActivityPub ID
+  rpc ListingsByOwnerApId (GetListingsByOwnerApIdRequest) returns (Connection);  // Get listings by a specific owner
+  rpc ListingsByCategoryApId (GetListingsByCategoryApIdRequest) returns (Connection);  // Get listings by category
 }
+
