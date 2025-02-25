@@ -1,7 +1,7 @@
 tonic::include_proto!("common.pagination");
 
 #[cfg(feature = "rpc-server-categories")]
-use base64::{prelude::BASE64_URL_SAFE_NO_PAD, Engine};
+use base64::{Engine, prelude::BASE64_URL_SAFE_NO_PAD};
 use cursor::Index;
 
 /// Pagination cursor
@@ -97,17 +97,13 @@ pub fn query_count(max: i32, pagination: &Index) -> i32 {
         Index::First(value) => value,
         Index::Last(value) => value,
     };
-    if *user_param > max {
-        max
-    } else {
-        *user_param
-    }
+    if *user_param > max { max } else { *user_param }
 }
 
 #[cfg(test)]
 #[cfg(feature = "rpc-server-categories")]
 mod tests {
-    use crate::common::pagination::cursor::{cursor_value, CursorValue};
+    use crate::common::pagination::cursor::{CursorValue, cursor_value};
 
     use super::*;
 

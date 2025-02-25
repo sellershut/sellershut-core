@@ -1,5 +1,4 @@
 use sellershut_core::google::protobuf;
-use sellershut_core::users::query_users_server::{QueryUsers, QueryUsersServer};
 use sellershut_core::users::QueryUserByApIdRequest;
 use sellershut_core::users::QueryUserByApIdResponse;
 use sellershut_core::users::QueryUserByNameRequest;
@@ -7,7 +6,8 @@ use sellershut_core::users::QueryUserByNameResponse;
 use sellershut_core::users::QueryUsersFollowingRequest;
 use sellershut_core::users::QueryUsersFollowingResponse;
 use sellershut_core::users::QueryUsersResponse;
-use tonic::{transport::Server, Request, Response, Status};
+use sellershut_core::users::query_users_server::{QueryUsers, QueryUsersServer};
+use tonic::{Request, Response, Status, transport::Server};
 
 #[derive(Default)]
 pub struct UserService;
